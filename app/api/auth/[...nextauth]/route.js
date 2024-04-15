@@ -3,7 +3,6 @@ import { connectToDatabase } from "@/utils/database";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import { NextResponse } from "next/server";
 
 export const authOptions = {
   session: {
@@ -43,41 +42,58 @@ export const authOptions = {
       session.user = token.user;
       return session;
     },
-    providers: [
-      CredentialsProvider({
-        credentials: {
-          email: {},
-          password: {},
-        },
-        async authorize(credentials, req) {
-          const { email, password } = credentials;
-          try {
-            await connectToDatabase();
-          } catch (err) {
-            console.error("Error connecting to database: ", err);
-            return NextResponse.json(
-              { error: "Internal Server Error!" },
-              { status: 500 }
-            );
-          }
-          const user = await User.findOne({ email });
-          if (user && (await bcrypt.compare(password, user.password))) {
-            return {
-              id: user._id,
-              email: user.email,
-              name: user.firstName + " " + user.lastName,
-            };
-          } else {
-            console.error("Invalid credentials!", email, password);
-            return NextResponse.json(
-              { error: "Invalid credentials!" },
-              { status: 401 }
-            );
-          }
-        },
-      }),
-    ],
   },
+  providers: [
+    CredentialsProvider({
+      credentials: {
+        email: {},
+        password: {},
+      },
+      async authorize(credentials, req) {
+        const { email, password } = credentials;
+        const emailRegex = new RegExp(/^[\w\\.\\+]+@([\w-]+\.)+[\w-]{2,}$/);
+        if (!emailRegex.test(email)) {
+          console.error("Invalid email!", email);
+          throw new Error("Email invalid!");
+        }
+        try {
+          await connectToDatabase();
+        } catch (err) {
+          console.error("Error connecting to database: ", err);
+          throw new Error("Internal Server Error!");
+        }
+        const user = await User.findOne({ email });
+        if (user) {
+          if (user.isLocked) {
+            console.error("User is locked!", email);
+            throw new Error("User is locked!");
+          }
+          const isPasswordCorrect = await bcrypt.compare(password, user?.password);
+          if (!isPasswordCorrect) {
+            user.loginAttempts += 1;
+            if (user.loginAttempts >= 5) {
+              user.isLocked = true;
+            }
+            await user.save();
+            console.error("Invalid password!", email);
+            throw new Error("Invalid password!");
+          }
+          if (!user.isVerified) {
+            console.error("User not verified!", email);
+            throw new Error("User not verified!");
+          }
+          return {
+            id: user._id,
+            email: user.email,
+            name: user.firstName + " " + user.lastName,
+          };
+        } else {
+          console.error("Invalid credentials!", email, password);
+          throw new Error("Invalid credentials!");
+        }
+      },
+    }),
+  ],
 };
 
 const handler = NextAuth(authOptions);

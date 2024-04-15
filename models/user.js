@@ -36,7 +36,24 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-});
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  isLocked: {
+    type: Boolean,
+    default: false,
+  },
+  loginAttempts: {
+    type: Number,
+    default: 0,
+  },
+  resetCodeRequests: {
+    type: Number,
+    default: 0,
+  }
+  }
+);
 
 UserSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
@@ -45,5 +62,5 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-const User = models.User || model("User", UserSchema);
+export const User = models.User || model("User", UserSchema);
 export default User;

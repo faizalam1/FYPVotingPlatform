@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import "./globals.css";
+import "../globals.css";
 import Footer from "@/components/Footer";
 
 export const metadata = {
@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="w-screen">
+    <html lang="en" className="w-screen bg-white text-black">
       <body className="font-mono w-screen">
         <header>
           <Navbar />

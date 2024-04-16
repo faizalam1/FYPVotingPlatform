@@ -24,7 +24,7 @@ export async function GET(req) {
   const sendVerificationEmail = await sendVerificationCode(
     email,
     user,
-    (forgotPassword = true)
+    {forgotPassword:true}
   );
   if (sendVerificationEmail.message == "Verification code sent!") {
     return NextResponse.json(

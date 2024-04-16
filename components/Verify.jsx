@@ -31,7 +31,7 @@ const Verify = () => {
         const response = await fetch("/api/auth/verify?email=" + encodeURI(email) + "&token=" + encodeURI(token));
         if (response.status == 200) {
             alert("Account verified! Login to continue")
-            router.push("/auth");
+            router.push("/app/auth");
             router.refresh();
         }
         else if (response.status == 400) {

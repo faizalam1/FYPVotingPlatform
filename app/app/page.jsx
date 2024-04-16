@@ -20,7 +20,7 @@ export default function Home() {
           </p>
         </div>
         <button className="m-auto bg-white hover:underline shadow-[0_4px_6px_-4px_rgba(0,0,0,0.1),0_10px_15px_-3px_rgba(0,0,0,0.1),0_0_0#000,0_0_0#000] cursor-pointer text-[#4f46e5] rounded-full p-3 tracking-[0.5px] leading-5 uppercase">
-          <Link href="/auth">Get Started</Link>
+          <Link href="/app/auth">Get Started</Link>
         </button>
       </section>
 

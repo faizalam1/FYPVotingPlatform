@@ -51,7 +51,7 @@ const ForgotPasswordForm = () => {
         });
         if (response.status == 200) {
             alert("Password changed! Login to continue")
-            router.push("/auth");
+            router.push("/app/auth");
             router.refresh();
         }
         else if (response.status == 400) {

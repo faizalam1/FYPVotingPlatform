@@ -25,7 +25,7 @@ const Signin = () => {
     const response = await fetch("/api/auth/forgotpassword?email=" + encodeURI(email));
     if (response.status == 200) {
       alert("Password reset code sent to your email!")
-      router.push("/auth/changepassword");
+      router.push("/app/auth/changepassword");
       router.refresh();
     }
     else if (response.status == 404) {
@@ -61,7 +61,7 @@ const Signin = () => {
     }
     else if(response.error == "User not verified!"){
       alert("User not verified!")
-      router.push("/auth/verify");
+      router.push("/app/auth/verify");
       router.refresh();
     }
     else {

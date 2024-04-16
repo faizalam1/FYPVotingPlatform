@@ -38,7 +38,7 @@ const Signup = () => {
         password: password,
         redirect: false
       });
-      router.push("/auth/verify");
+      router.push("/app/auth/verify");
       router.refresh();
     }
     else if(response.status == 409){

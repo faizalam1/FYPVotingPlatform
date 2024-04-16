@@ -1,22 +1,22 @@
 import Provider from "@/components/Portal/Provider";
-import Navbar from "@/components/Portal/Navbar";
-import Footer from "@/components/Portal/Footer";
+import PortalNavbar from "@/components/Portal/PortalNavbar";
+import PortalFooter from "@/components/Portal/PortalFooter";
 
 export const metadata = {
   title: "FYP Voting Platform Portal",
   description: "Portal for Voting Campaigns",
 };
 
-export default function RootLayout({ children }) {
+export default function PortalLayout({ children }) {
   return (
     <html lang="en" className="w-screen">
-      <body className="font-mono w-screen">
+      <body className="font-mono w-screen bg-white text-black">
         <Provider>
           <header>
-            <Navbar />
+            <PortalNavbar />
           </header>
           {children}
-          <Footer />
+          <PortalFooter />
         </Provider>
       </body>
     </html>

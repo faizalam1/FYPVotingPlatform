@@ -9,7 +9,7 @@ export const authOptions = {
     jwt: true,
   },
   pages: {
-    signIn: "/auth",
+    signIn: "/app/auth",
   },
   callbacks: {
     async jwt({ token, user }) {

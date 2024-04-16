@@ -55,8 +55,8 @@ const Signup = () => {
 
   return (
     <>
-      <h2 className="font-semibold text-center text-2xl">
-        Sign up
+      <h2>
+        Sign up for an account
       </h2>
       <form className="space-y-4">
         <div>
@@ -65,7 +65,7 @@ const Signup = () => {
             data-tooltip-id="firstNameError"
             data-tooltip-variant="error"
             data-tooltip-content="Please enter a valid first name. It should contain only letters."
-          ><br />
+          >
             <input
               type="text"
               name="firstName"
@@ -84,12 +84,12 @@ const Signup = () => {
           />
         </div>
         <div>
-          <label htmlFor="lastName">Last Name</label>
+          <label htmlFor="lastName">Last Name:</label>
           <a
             data-tooltip-id="lastNameError"
             data-tooltip-variant="error"
             data-tooltip-content="Please enter a valid last name. It should contain only letters."
-          ><br />
+          >
             <input
               type="text"
               name="lastName"
@@ -113,7 +113,7 @@ const Signup = () => {
             data-tooltip-id="emailError"
             data-tooltip-variant="error"
             data-tooltip-content="Please enter a valid email."
-          ><br />
+          >
             <input
               type="text"
               name="email"
@@ -137,7 +137,7 @@ const Signup = () => {
             data-tooltip-id="passwordError"
             data-tooltip-variant="error"
             data-tooltip-content="Password invalid, it should contain at least 1 lowercase letter, 1 uppercase letter, 1 number, 1 special character and be atleast 8 characters long!"
-          ><br />
+          >
             <input
               type="password"
               name="password"
@@ -161,7 +161,7 @@ const Signup = () => {
             data-tooltip-id="password2Error"
             data-tooltip-variant="error"
             data-tooltip-content="Passwords do not match!"
-          ><br />
+          >
             <input
               type="password"
               name="password2"
@@ -179,7 +179,8 @@ const Signup = () => {
             hidden={!password2 || password == password2}
           />
         </div>
-        <button
+        <div className="bg-green-500 rounded-md text-white text-center  text-center  font-medium">
+        <button 
           onClick={handleSubmit}
           disabled={
             !nameRegex.test(firstName) ||
@@ -190,6 +191,7 @@ const Signup = () => {
             className="p-2 bg-green-500 rounded-xl text-white hover:bg-green-700 font-medium w-full">
           Sign Up
         </button>
+        </div>
       </form>
     </>
   );

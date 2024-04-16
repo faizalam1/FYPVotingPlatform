@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Tooltip } from "react-tooltip";
 
+
 const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -85,6 +86,7 @@ const Signin = () => {
             data-tooltip-content="Please enter a valid email."
           ><br />
           <input
+          className="p-1 rounded-md border border-gray-100 rounded-md grid justify-items-start ..."
             type="text"
             name="email"
             placeholder="Email"
@@ -113,8 +115,8 @@ const Signin = () => {
             className="p-2 border rounded-lg border-gray-300 w-full"
             />
         </div>
-        <div>
-          <button
+        <div className="text-center font-medium  ">
+          <button 
             onClick={handleForgotPassword}
           disabled={!email || !emailRegex.test(email)}
           className="cursor-pointer underline underline-offset-4"
@@ -122,7 +124,7 @@ const Signin = () => {
            Forgot Password?
           </button>
         </div>
-        <div>
+        <div className="bg-indigo-600 rounded-md text-white text-center  font-medium">
           <button
             onClick={handleSignin}
             disabled={!email || !password || !emailRegex.test(email)}

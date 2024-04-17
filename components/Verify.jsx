@@ -70,9 +70,8 @@ const Verify = () => {
             })
     }
     return (
-        <main  className="flex flex-row justify-center w-full h-screen space-x-16 bg-[#f3f4f6] text-black p-8 font-sans">
-            <section className="bg-white p-4 rounded-2xl space-y-7 w-96">
-            <h2 className="font-semibold text-center text-2xl ">
+        <main className="bg-white text-black">
+            <h2>
                 Verify your account
             </h2>
             <form className="space-y-7">
@@ -82,7 +81,7 @@ const Verify = () => {
                         data-tooltip-id="emailError"
                         data-tooltip-variant="error"
                         data-tooltip-content="Please enter a valid email."
-                    ><br />
+                    >
                         <input
                             type="text"
                             name="email"
@@ -102,12 +101,12 @@ const Verify = () => {
 
                 </div>
                 <div>
-                    <label htmlFor="token">Verification Code</label>
+                    <label htmlFor="token">Verification Code:</label>
                     <a
-                        data-tooltip-id="tokenError"
+                        data-tooltip-id="tokenErrr"
                         data-tooltip-variant="error"
                         data-tooltip-content="Please enter a valid verification code."
-                    ><br />
+                    >
                         <input
                             type="text"
                             name="token"
@@ -124,7 +123,7 @@ const Verify = () => {
                         hidden={!token || tokenRegex.test(token)}
                     />
                 </div>
-                <div>
+                <div className="  bg-green-500 rounded-md text-white   text-center  font-medium">
                     <button
                         onClick={handleVerify}
                         disabled={!email || !token || !emailRegex.test(email) || !tokenRegex.test(token)}
@@ -133,7 +132,7 @@ const Verify = () => {
                         Verify
                     </button>
                 </div>
-                <div>
+                <div className="bg-indigo-600 rounded-md text-white   text-center  font-medium">
                     <button
                         onClick={resendCode}
                         disabled={!email || !emailRegex.test(email)}
@@ -144,7 +143,7 @@ const Verify = () => {
 
                 </div>
             </form>
-            </section>
+         
         </main>
     )
 }

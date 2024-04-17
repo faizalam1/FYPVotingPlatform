@@ -179,7 +179,7 @@ const Signup = () => {
             hidden={!password2 || password == password2}
           />
         </div>
-        <div className="bg-green-500 rounded-md text-white text-center  text-center  font-medium">
+        <div className="bg-green-500 rounded-md text-white   text-center  font-medium">
         <button 
           onClick={handleSubmit}
           disabled={

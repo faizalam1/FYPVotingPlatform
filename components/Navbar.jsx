@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Navbar = () => {
   return (
-    <nav className="flex flex-row justify-between py-2 px-4 w-full bg-[#e8e8e8] text-left text-base text-gray-700">
+    <nav className="flex flex-row justify-between py-2 px-4 w-full bg-[#e8e8e8] text-left text-base text-gray-700 font-semibold font-sans">
       <Link href="/app" className="leading-7 font-semibold;">
         <div className="bg-white flex flex-col items-center justify-center cursor-pointer text-xl p-3 rounded-[5px] border-[0.5px] border-solid border-[#222]">
           SV

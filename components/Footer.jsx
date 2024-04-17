@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 const Footer = () => {
   return (
-    <footer className="py-4 flex flex-row justify-between px-4 bg-white w-full text-[length:var(--font-size-sm)] text-[#4b5563] shadow-[5px_5px_5px_5px_rgb(203,208,209)]">
+    <footer className="font-sans font-semibold py-3 flex flex-row justify-between px-4 bg-white w-full text-[length:var(--font-size-sm)] text-[#4b5563] shadow-[5px_5px_5px_5px_rgb(203,208,209)]">
       <div className="">
         <p className="leading-5 inline-block">
           © 2024 SV. All Rights Reserved.

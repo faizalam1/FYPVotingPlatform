@@ -19,7 +19,11 @@ const Contact = () => {
     }
   }, [name, subject, message]);
   return (
+<<<<<<< Updated upstream
     <div className="p-4 flex flex-col justify-center items-center bg-[#f3f4f6] text-black">
+=======
+    <main className="font-sans p-4 flex flex-col justify-center items-center bg-[#f3f4f6] text-black">
+>>>>>>> Stashed changes
       <h1 className="text-3xl font-semibold m-8">Contact Us</h1>
       <section className="flex flex-row justify-between space-x-8">
         <article className="bg-white p-8 rounded-lg">

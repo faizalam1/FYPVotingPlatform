@@ -75,7 +75,7 @@ const Signin = () => {
   return (
     <>
       <h2 className="font-semibold text-center text-2xl">
-        Sign in
+        Sign In
       </h2>
       <form className="space-y-4">
         <div>

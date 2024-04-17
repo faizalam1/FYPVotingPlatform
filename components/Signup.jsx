@@ -55,8 +55,8 @@ const Signup = () => {
 
   return (
     <>
-      <h2>
-        Sign up for an account
+      <h2 className="font-semibold text-center text-2xl">
+        Sign Up 
       </h2>
       <form className="space-y-4">
         <div>

@@ -86,14 +86,14 @@ const Signin = () => {
             data-tooltip-content="Please enter a valid email."
           ><br />
           <input
-          className="p-1 rounded-md border border-gray-100 rounded-md grid justify-items-start ..."
+          className="p-2 rounded-lg border border-gray-100 w-full rounded-md grid justify-items-start ..."
             type="text"
             name="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="p-2 border rounded-lg border-gray-300 w-full"
+          
           />
           </a>
           <Tooltip

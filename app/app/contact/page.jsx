@@ -19,7 +19,7 @@ const Contact = () => {
     }
   }, [name, subject, message]);
   return (
-    <main className="p-4 flex flex-col justify-center items-center bg-[#f3f4f6] text-black">
+    <div className="p-4 flex flex-col justify-center items-center bg-[#f3f4f6] text-black">
       <h1 className="text-3xl font-semibold m-8">Contact Us</h1>
       <section className="flex flex-row justify-between space-x-8">
         <article className="bg-white p-8 rounded-lg">
@@ -102,7 +102,7 @@ const Contact = () => {
         </div>
         </article>
       </section>
-    </main>
+    </div>
   );
 };
 

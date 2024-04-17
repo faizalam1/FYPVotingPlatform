@@ -3,7 +3,7 @@ import Card from "@/components/Card";
 
 export default function Home() {
   return (
-    <main>
+    <>
       <section className="py-4 flex flex-col justify-center space-y-8 bg-[#4f46e5] w-full text-[length:var(--font-size-base)] text-white">
         <div className="flex justify-center w-full text-5xl">
           <h2 className="leading-[48px]">Your Voice, Your Power</h2>
@@ -58,6 +58,6 @@ export default function Home() {
           />
         </div>
       </section>
-    </main>
+    </>
   );
 }

@@ -3,7 +3,7 @@ import Card from "@/components/Card";
 
 const About = () => {
   return (
-    <main className="flex flex-col items-start relative bg-gray-100 w-full justify-start text-center text-[32px] text-gray-600">
+    <div className="flex flex-col items-start relative bg-gray-100 w-full justify-start text-center text-[32px] text-gray-600">
       <section className="bg-white shadow-[0_1px_2px_-1px_rgba(0,0,0,0.1),0_1px_3px_rgba(0,0,0,0.1),0_0_0#000,0_0_0#000] w-full text-gray-800">
         <div className="w-full">
           <header className="w-full">
@@ -59,7 +59,7 @@ const About = () => {
           />
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

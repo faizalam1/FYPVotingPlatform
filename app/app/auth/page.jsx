@@ -3,14 +3,14 @@ import Signup from "@/components/Signup";
 
 const Auth = () => {
   return (
-    <main className="flex flex-row justify-center w-full h-fit space-x-16 bg-[#f3f4f6] text-black p-8">
-        <section className="bg-white p-4 rounded-2xl">
+    <div className="flex flex-row justify-center w-full min-h-[82vh] space-x-16 bg-[#f3f4f6] text-black p-8">
+        <section className="bg-white p-4 rounded-2xl flex-grow">
             <Signin />
         </section>
-        <section className="bg-white p-4 rounded-2xl">
+        <section className="bg-white p-4 rounded-2xl flex-grow">
             <Signup />
         </section>
-    </main>
+    </div>
   )
 }
 

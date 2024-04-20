@@ -82,6 +82,8 @@ export const authOptions = {
             console.error("User not verified!", email);
             throw new Error("User not verified!");
           }
+          user.loginAttempts = 0;
+          await user.save();
           return {
             id: user._id,
             email: user.email,

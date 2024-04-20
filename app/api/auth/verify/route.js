@@ -26,26 +26,28 @@ export async function GET(req) {
 
   const user = await User.findOne({ email });
   if (!user) {
-    return NextResponse.json({ error: "User not found!" }, { status: 404 });
+    return NextResponse.json({ error: "Invalid token or email!" }, { status: 400 });
   }
 
   const userVerification = await UserVerification.findOne({
     _userId: user._id,
   });
-  if (!userVerification) {
+  if (userVerification) {
     if (userVerification.token !== token) {
       userVerification.attempts += 1;
       if (userVerification.attempts >= 5) {
         await User.updateOne({ _id: user._id }, { isLocked: true });
       }
       await userVerification.save();
-      return NextResponse.json({ error: "Invalid token!" }, { status: 400 });
+      return NextResponse.json({ error: "Invalid token or email!" }, { status: 400 });
     }
-    return NextResponse.json({ error: "Invalid token!" }, { status: 400 });
+  }
+  else{
+    return NextResponse.json({ error: "Invalid token or email!" }, { status: 400 });
   }
 
   await UserVerification.deleteOne({ _userId: user._id, token });
-  await User.updateOne({ _id: user._id }, { isVerified: true });
-
+  await User.updateOne({ _id: user._id }, { isVerified: true, resetCodeRequests: 0 });
+  console.log("User verified!");
   return NextResponse.json({ message: "User verified!" }, { status: 200 });
 }

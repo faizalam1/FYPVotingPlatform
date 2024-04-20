@@ -55,12 +55,12 @@ const Signup = () => {
 
   return (
     <>
-      <h2>
-        Sign up for an account
+      <h2 className="font-semibold text-center text-2xl">
+        Sign Up 
       </h2>
-      <form>
+      <form className="space-y-4">
         <div>
-          <label htmlFor="firstName">First Name:</label>
+          <label htmlFor="firstName">First Name</label>
           <a
             data-tooltip-id="firstNameError"
             data-tooltip-variant="error"
@@ -73,6 +73,7 @@ const Signup = () => {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
+              className="p-2 border rounded-lg border-gray-300 w-full"
             />
           </a>
           <Tooltip
@@ -96,6 +97,7 @@ const Signup = () => {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               required
+              className="p-2 border rounded-lg border-gray-300 w-full"
             />
           </a>
           <Tooltip
@@ -106,7 +108,7 @@ const Signup = () => {
           />
         </div>
         <div>
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Email</label>
           <a
             data-tooltip-id="emailError"
             data-tooltip-variant="error"
@@ -119,6 +121,7 @@ const Signup = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="p-2 border rounded-lg border-gray-300 w-full"
             />
           </a>
           <Tooltip
@@ -129,7 +132,7 @@ const Signup = () => {
           />
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password">Password</label>
           <a
             data-tooltip-id="passwordError"
             data-tooltip-variant="error"
@@ -142,6 +145,7 @@ const Signup = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="p-2 border rounded-lg border-gray-300 w-full"
             />
           </a>
           <Tooltip
@@ -152,7 +156,7 @@ const Signup = () => {
           />
         </div>
         <div>
-          <label htmlFor="password2">Confirm Password:</label>
+          <label htmlFor="password2">Confirm Password</label>
           <a
             data-tooltip-id="password2Error"
             data-tooltip-variant="error"
@@ -165,6 +169,7 @@ const Signup = () => {
               value={password2}
               onChange={(e) => setPassword2(e.target.value)}
               required
+              className="p-2 border rounded-lg border-gray-300 w-full"
             />
           </a>
           <Tooltip
@@ -174,16 +179,19 @@ const Signup = () => {
             hidden={!password2 || password == password2}
           />
         </div>
-        <button
+        <div className="bg-green-500 rounded-md text-white   text-center  font-medium">
+        <button 
           onClick={handleSubmit}
           disabled={
             !nameRegex.test(firstName) ||
             !nameRegex.test(lastName) ||
             !emailRegex.test(email) ||
             passwordRegex.test(password) ||
-            password != password2}>
+            password != password2} 
+            className="p-2 bg-green-500 rounded-xl text-white hover:bg-green-700 font-medium w-full">
           Sign Up
         </button>
+        </div>
       </form>
     </>
   );

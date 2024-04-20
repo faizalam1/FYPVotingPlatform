@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Tooltip } from "react-tooltip";
 
+
 const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -73,24 +74,26 @@ const Signin = () => {
 
   return (
     <>
-      <h2>
-        Sign in to your account
+      <h2 className="font-semibold text-center text-2xl">
+        Sign In
       </h2>
-      <form>
+      <form className="space-y-4">
         <div>
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Email</label>
           <a
             data-tooltip-id="emailError"
             data-tooltip-variant="error"
             data-tooltip-content="Please enter a valid email."
-          >
+          ><br />
           <input
+          className="p-2 rounded-lg border border-gray-100 w-full rounded-md grid justify-items-start ..."
             type="text"
             name="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+          
           />
           </a>
           <Tooltip
@@ -101,7 +104,7 @@ const Signin = () => {
           />
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
             name="password"
@@ -109,20 +112,23 @@ const Signin = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="p-2 border rounded-lg border-gray-300 w-full"
             />
         </div>
-        <div>
-          <button
+        <div className="text-center font-medium  ">
+          <button 
             onClick={handleForgotPassword}
           disabled={!email || !emailRegex.test(email)}
+          className="cursor-pointer underline underline-offset-4"
           >
-            Forgot Password?
+           Forgot Password?
           </button>
         </div>
-        <div>
+        <div className="bg-indigo-600 rounded-md text-white text-center  font-medium">
           <button
             onClick={handleSignin}
             disabled={!email || !password || !emailRegex.test(email)}
+            className="p-2 bg-indigo-700 rounded-xl text-white hover:bg-indigo-900 font-medium w-full"
           >
             Sign In
           </button>

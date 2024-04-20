@@ -66,18 +66,19 @@ const ForgotPasswordForm = () => {
         }
     }
     return (
-        <main className='bg-white text-black'>
-            <h2>
+        <main className="flex flex-row justify-center w-full h-fit space-x-16 bg-[#f3f4f6] text-black p-8 font-sans">
+           <section className="bg-white p-4 rounded-2xl space-y-7 w-96">
+            <h2 className="font-semibold text-center text-2xl ">
                 Change your password
             </h2>
-            <form>
+            <form className="space-y-7">
                 <div>
-                    <label htmlFor="email">Email:</label>
+                    <label htmlFor="email">Email</label>
                     <a
                         data-tooltip-id="emailError"
                         data-tooltip-variant="error"
                         data-tooltip-content="Please enter a valid email."
-                    >
+                    ><br />
                         <input
                             type="text"
                             name="email"
@@ -85,6 +86,7 @@ const ForgotPasswordForm = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Email"
                             required
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                         />
                     </a>
                     <Tooltip
@@ -95,12 +97,12 @@ const ForgotPasswordForm = () => {
                     />
                 </div>
                 <div>
-                    <label htmlFor="token">Token:</label>
+                    <label htmlFor="token">Token</label>
                     <a
                         data-tooltip-id="tokenError"
                         data-tooltip-variant="error"
                         data-tooltip-content="Please enter a valid token."
-                    >
+                    ><br />
                         <input
                             type="text"
                             name="token"
@@ -108,6 +110,7 @@ const ForgotPasswordForm = () => {
                             onChange={(e) => setToken(e.target.value)}
                             placeholder="Token"
                             required
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                         />
                     </a>
                     <Tooltip
@@ -118,12 +121,12 @@ const ForgotPasswordForm = () => {
                     />
                 </div>
                 <div>
-                    <label htmlFor="password">Password:</label>
+                    <label htmlFor="password">Password</label>
                     <a
                         data-tooltip-id="passwordError"
                         data-tooltip-variant="error"
                         data-tooltip-content="Password invalid, it should contain at least 1 lowercase letter, 1 uppercase letter, 1 number, 1 special character and be atleast 8 characters long."
-                    >
+                    ><br />
                         <input
                             type="password"
                             name="password"
@@ -131,6 +134,7 @@ const ForgotPasswordForm = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Password"
                             required
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                         />
                     </a>
                     <Tooltip
@@ -141,12 +145,12 @@ const ForgotPasswordForm = () => {
                     />
                 </div>
                 <div>
-                    <label htmlFor="password2">Confirm Password:</label>
+                    <label htmlFor="password2">Confirm Password</label>
                     <a
                         data-tooltip-id="password2Error"
                         data-tooltip-variant="error"
                         data-tooltip-content="Passwords do not match!"
-                    >
+                    ><br />
                         <input
                             type="password"
                             name="password2"
@@ -154,6 +158,7 @@ const ForgotPasswordForm = () => {
                             onChange={(e) => setPassword2(e.target.value)}
                             placeholder="Confirm Password"
                             required
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                         />
                     </a>
                     <Tooltip
@@ -166,10 +171,12 @@ const ForgotPasswordForm = () => {
                 <button
                     onClick={handleForgotPassword}
                     disabled={!email || !token || !password || !password2 || !emailRegex.test(email) || !tokenRegex.test(token) || passwordRegex.test(password) || password !== password2}
+                    className="p-2 bg-indigo-700 rounded-xl text-white hover:bg-indigo-900 font-medium w-full"
                 >
                     Change Password
                 </button>
             </form>
+            </section>
         </main>
     )
 }

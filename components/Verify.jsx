@@ -70,11 +70,11 @@ const Verify = () => {
             })
     }
     return (
-        <main className="bg-white text-black">
-            <h2>
+        <main className="  text-2x1 bg-white text-black">
+            <h2 className="font-semibold text-center text-2xl">
                 Verify your account
             </h2>
-            <form>
+            <form className="space-y-7">
                 <div>
                     <label htmlFor="email">Email:</label>
                     <a
@@ -89,6 +89,7 @@ const Verify = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Email"
                             required
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                         />
                     </a>
                     <Tooltip
@@ -102,7 +103,7 @@ const Verify = () => {
                 <div>
                     <label htmlFor="token">Verification Code:</label>
                     <a
-                        data-tooltip-id="tokenError"
+                        data-tooltip-id="tokenErrr"
                         data-tooltip-variant="error"
                         data-tooltip-content="Please enter a valid verification code."
                     >
@@ -112,6 +113,7 @@ const Verify = () => {
                             value={token}
                             onChange={(e) => setToken(e.target.value)}
                             placeholder="Verification Code"
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                         />
                     </a>
                     <Tooltip
@@ -121,24 +123,27 @@ const Verify = () => {
                         hidden={!token || tokenRegex.test(token)}
                     />
                 </div>
-                <div>
+                <div className="  bg-green-500 rounded-md text-white   text-center  font-medium">
                     <button
                         onClick={handleVerify}
                         disabled={!email || !token || !emailRegex.test(email) || !tokenRegex.test(token)}
+                        className="p-2 bg-indigo-700 rounded-md text-white hover:bg-indigo-900 font-medium w-full"
                     >
                         Verify
                     </button>
                 </div>
-                <div>
+                <div className="bg-indigo-600 rounded-md text-white   text-center  font-medium">
                     <button
                         onClick={resendCode}
                         disabled={!email || !emailRegex.test(email)}
+                        className=" font-large rounded-lg text-sm px-5 py-2.5 me-2 mb-2 hover:bg-white-100  hover:text-black"
                     >
                         Resend Verification Code
                     </button>
 
                 </div>
             </form>
+         
         </main>
     )
 }

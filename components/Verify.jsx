@@ -35,10 +35,10 @@ const Verify = () => {
             router.refresh();
         }
         else if (response.status == 400) {
-            alert("Invalid input!")
+            alert("Invalid token or email!")
         }
         else if (response.status == 404) {
-            alert("Invalid token!")
+            alert("Invalid token or email!")
         }
         else {
             alert("Verification Failed!")

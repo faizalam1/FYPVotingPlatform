@@ -37,14 +37,14 @@ const CampaignCreation = () => {
     }
 
     return (
-        <section className="flex flex-col justify-center items-center space-y-4 bg-white rounded-2xl p-8 lg:w-1/2 md:w-3/4 sm:w-full">
+        <section className="flex flex-col justify-center items-center space-y-4 bg-white rounded-2xl p-8 lg:w-1/2 md:w-3/4 sm:w-full p-4">
             <h1 className="text-3xl font-bold">Create New Campaign</h1>
             <form className="flex flex-col space-y-4 justify-center w-3/4">
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">Campaign Name</label>
                     <input
                         type="text"
-                        className="border border-gray-200 rounded-lg p-2 mb-2"
+                        className="p-2 border rounded-lg border-gray-300 w-full"
                         placeholder="Enter Campaign Name"
                         value={campaignName}
                         onChange={(e) => setCampaignName(e.target.value)}
@@ -53,7 +53,7 @@ const CampaignCreation = () => {
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">Campaign Description</label>
                     <textarea
-                        className="border border-gray-200 rounded-lg p-2 mb-2"
+                         className="p-2 border rounded-lg border-gray-300 w-full"
                         placeholder="Enter Campaign Description"
                         value={campaignDescription}
                         onChange={(e) => setCampaignDescription(e.target.value)}
@@ -62,7 +62,7 @@ const CampaignCreation = () => {
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">Voting Type</label>
                     <select
-                        className="border border-gray-200 rounded-lg p-2 mb-2"
+                         className="p-2 border rounded-lg border-gray-300 w-full"
                         value={votingType}
                         onChange={(e) => setVotingType(e.target.value)}
                     >
@@ -74,7 +74,7 @@ const CampaignCreation = () => {
                     <label className="text-sm font-semibold">Campaign Start</label>
                     <input
                         type="datetime-local"
-                        className="border border-gray-200 rounded-lg p-2 mb-2"
+                        className="p-2 border rounded-lg border-gray-300 w-full"
                         onChange={(e) => setCampaignStart(convertDateTimetoUTC(e.target.value))}
                     />
                 </div>
@@ -82,7 +82,7 @@ const CampaignCreation = () => {
                     <label className="text-sm font-semibold">Campaign End</label>
                     <input
                         type="datetime-local"
-                        className="border border-gray-200 rounded-lg p-2 mb-2"
+                        className="p-2 border rounded-lg border-gray-300 w-full"
                         onChange={(e) => setCampaignEnd(convertDateTimetoUTC(e.target.value))}
                     />
                 </div>
@@ -101,7 +101,7 @@ const CampaignCreation = () => {
                         <label className="text-sm font-semibold">Allowed Domain</label>
                         <input
                             type="text"
-                            className="border border-gray-200 rounded-lg p-2 mb-2"
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                             placeholder="Enter allowed domain"
                             value={domain}
                             onChange={(e) => setDomain(e.target.value)}
@@ -112,7 +112,7 @@ const CampaignCreation = () => {
                     <label className="text-sm font-semibold">Number of Candidates</label>
                     <input
                         type="number"
-                        className="border border-gray-200 rounded-lg p-2 mb-2"
+                        className="p-2 border rounded-lg border-gray-300 w-full"
                         value={numberOfCandidates}
                         onChange={(e) => setNumberOfCandidates(e.target.value)}
                     />

@@ -5,9 +5,14 @@ const Candidate = ({ index, areAdditionalFields, numberOfAdditionalFields, addCa
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [image, setImage] = useState(null)
-    const [additionalFields, setAdditionalFields] = useState(Array.from({ length: numberOfAdditionalFields }, (_, index) => {
-        return { name: '', value: '' }
-    }))
+    const [additionalFields, setAdditionalFields] = useState([])
+
+    useEffect(() => {
+        setAdditionalFields(Array.from({ length: numberOfAdditionalFields }, (_, index) => {
+            return { name: '', value: '' }
+        }))
+    }, [numberOfAdditionalFields])
+
 
     
     useEffect(() => {
@@ -33,6 +38,9 @@ const Candidate = ({ index, areAdditionalFields, numberOfAdditionalFields, addCa
                     type="text"
                     className="border border-gray-200 rounded-lg p-2 mb-2"
                     placeholder="Enter candidate name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
                 />
             </div>
             <div className="flex flex-col">
@@ -40,6 +48,9 @@ const Candidate = ({ index, areAdditionalFields, numberOfAdditionalFields, addCa
                 <textarea
                     className="border border-gray-200 rounded-lg p-2 mb-2"
                     placeholder="Enter candidate description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
                 />
             </div>
             <div className="flex flex-col">
@@ -60,7 +71,7 @@ const Candidate = ({ index, areAdditionalFields, numberOfAdditionalFields, addCa
                     return (
                         <div key={index} className="flex flex-col">
                             <h2 className="text-base font-semibold mt-4">Additional Field {index + 1}</h2>
-                            <div className='flex space-x-4 w-full'>
+                            <div className='flex space-x-1 w-full'>
                                 <input
                                     className='border border-gray-200 rounded-lg p-2 mb-2 w-1/2'
                                     type='text'
@@ -68,6 +79,7 @@ const Candidate = ({ index, areAdditionalFields, numberOfAdditionalFields, addCa
                                     value={additionalFields[index]?.name || ""}
                                     onChange={(e) => addAdditionalField(e.target.value, null, index)}
                                 />
+                                <p className='text-lg font-semibold pt-1'>:</p>
                                 <input
                                     className='border border-gray-200 rounded-lg p-2 mb-2 w-1/2'
                                     type='text'

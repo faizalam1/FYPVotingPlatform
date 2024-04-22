@@ -159,7 +159,7 @@ const CampaignCreation = () => {
     }
 
     return (
-        <section className="flex flex-col justify-center items-center space-y-4 bg-white rounded-2xl p-8 lg:w-1/2 md:w-3/4 sm:w-full">
+        <section className="flex flex-col justify-center items-center space-y-4 bg-white rounded-2xl p-8 lg:w-1/2 md:w-3/4 sm:w-full p-4">
             <h1 className="text-3xl font-bold">Create New Campaign</h1>
             <form className="flex flex-col space-y-4 justify-center w-3/4">
                 <div className="flex flex-col">
@@ -171,7 +171,7 @@ const CampaignCreation = () => {
                     >
                         <input
                             type="text"
-                            className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                             placeholder="Enter Campaign Name"
                             value={campaignName}
                             onChange={(e) => setCampaignName(e.target.value)}
@@ -193,7 +193,7 @@ const CampaignCreation = () => {
                         data-tooltip-content="Please enter a valid description. It should contain atleast 10 characters."
                     >
                         <textarea
-                            className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                             placeholder="Enter Campaign Description"
                             value={campaignDescription}
                             onChange={(e) => setCampaignDescription(e.target.value)}
@@ -215,7 +215,7 @@ const CampaignCreation = () => {
                         data-tooltip-content="Please enter a valid voting type. It should be either Default or Ranked."
                     >
                         <select
-                            className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                             value={votingType}
                             onChange={(e) => setVotingType(e.target.value)}
                             required
@@ -240,7 +240,7 @@ const CampaignCreation = () => {
                     >
                         <input
                             type="datetime-local"
-                            className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                             onChange={(e) => setCampaignStart(convertDateTimetoUTC(e.target.value))}
                             required
                         />
@@ -261,7 +261,7 @@ const CampaignCreation = () => {
                     >
                         <input
                             type="datetime-local"
-                            className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                             onChange={(e) => setCampaignEnd(convertDateTimetoUTC(e.target.value))}
                             required
                         />
@@ -293,7 +293,7 @@ const CampaignCreation = () => {
                         >
                             <input
                                 type="text"
-                                className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
+                                className="p-2 border rounded-lg border-gray-300 w-full"
                                 placeholder="Domain1, Domain2, ..."
                                 value={domains.join(', ')}
                                 onChange={(e) => setDomains(e.target.value.split(', '))}
@@ -316,7 +316,7 @@ const CampaignCreation = () => {
                     >
                         <input
                             type="number"
-                            className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
+                            className="p-2 border rounded-lg border-gray-300 w-full"
                             value={numberOfCandidates}
                             onChange={(e) => changeNumberOfCandidates(e.target.value)}
                             min={2}

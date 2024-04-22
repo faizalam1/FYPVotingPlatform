@@ -71,12 +71,12 @@ const Verify = () => {
     }
     return (
         <main className="  text-2x1 bg-white text-black">
-            <h2 className="font-semibold text-center text-2xl">
+            <h2 className="font-semibold text-center text-2xl ">
                 Verify your account
             </h2>
             <form className="space-y-7">
                 <div>
-                    <label htmlFor="email">Email:</label>
+                    <label htmlFor="email">Email</label>
                     <a
                         data-tooltip-id="emailError"
                         data-tooltip-variant="error"
@@ -101,7 +101,7 @@ const Verify = () => {
 
                 </div>
                 <div>
-                    <label htmlFor="token">Verification Code:</label>
+                    <label htmlFor="token">Verification Code</label>
                     <a
                         data-tooltip-id="tokenErrr"
                         data-tooltip-variant="error"
@@ -123,25 +123,25 @@ const Verify = () => {
                         hidden={!token || tokenRegex.test(token)}
                     />
                 </div>
-                <div className="  bg-green-500 rounded-md text-white   text-center  font-medium">
+               
                     <button
                         onClick={handleVerify}
                         disabled={!email || !token || !emailRegex.test(email) || !tokenRegex.test(token)}
-                        className="p-2 bg-indigo-700 rounded-md text-white hover:bg-indigo-900 font-medium w-full"
+                        className="p-2 bg-indigo-700 rounded-xl text-white hover:bg-indigo-900 font-medium w-full"
                     >
                         Verify
                     </button>
-                </div>
-                <div className="bg-indigo-600 rounded-md text-white   text-center  font-medium">
+                
+            
                     <button
                         onClick={resendCode}
                         disabled={!email || !emailRegex.test(email)}
-                        className=" font-large rounded-lg text-sm px-5 py-2.5 me-2 mb-2 hover:bg-white-100  hover:text-black"
+                        className="text-gray-900 bg-[#f3f4f6] border border-gray-300  hover:bg-gray-100 font-medium rounded-xl text-sm px-5 py-2.5 me-2 mb-2 hover:bg-gray-200"
                     >
                         Resend Verification Code
                     </button>
 
-                </div>
+               
             </form>
          
         </main>

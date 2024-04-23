@@ -97,6 +97,7 @@ const CampaignCreation = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        
         if (nameRegex.test(campaignName) === false) {
             alert("Invalid Campaign Name");
             return;
@@ -370,8 +371,7 @@ const CampaignCreation = () => {
 
                 <button
                     className="bg-blue-500 text-white font-semibold p-2 rounded-lg"
-                    onSubmit={handleSubmit}
-                >
+                    onClick={handleSubmit}>
                     Create Campaign
                 </button>
 

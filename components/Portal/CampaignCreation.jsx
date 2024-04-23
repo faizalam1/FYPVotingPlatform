@@ -159,7 +159,7 @@ const CampaignCreation = () => {
     }
 
     return (
-        <section className="flex flex-col justify-center items-center space-y-4 bg-white rounded-2xl p-8 lg:w-1/2 md:w-3/4 sm:w-full p-4">
+        <section className="flex flex-col justify-center items-center space-y-4 bg-white rounded-2xl p-8 lg:w-1/2 md:w-3/4 sm:w-full">
             <h1 className="text-3xl font-bold">Create New Campaign</h1>
             <form className="flex flex-col space-y-4 justify-center w-3/4">
                 <div className="flex flex-col">

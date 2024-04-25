@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Candidate from '@/components/Portal/Candidate'
 import { Tooltip } from "react-tooltip";
 
@@ -17,16 +17,26 @@ const CampaignCreation = () => {
     const [candidates, setCandidates] = useState(Array.from({ length: numberOfCandidates }, (_, index) => {
         return { name: '', description: '', image: null, additionalFields: [] }
     }));
+    const [areCandidatesValid, setAreCandidatesValid] = useState(false);
 
     const convertDateTimetoUTC = (datetime) => {
         const date = new Date(datetime);
         return date.toISOString();
     }
 
+    const changeAreCandidatesValid = (newAreCandidatesValid) => {
+        if (newAreCandidatesValid) {
+            setAreCandidatesValid(prev => prev && newAreCandidatesValid);
+        }
+        else{
+            setAreCandidatesValid(newAreCandidatesValid);
+        }
+    };
+
     const changeNumberOfCandidates = (newNumber) => {
         setNumberOfCandidates(prevNumber => {
             let newNumberOfCandidates;
-            if (newNumber < 2) {
+            if (newNumber < 0) {
                 newNumberOfCandidates = 2;
             }
             else {
@@ -52,7 +62,7 @@ const CampaignCreation = () => {
     const changeNumberOfAdditionalFields = (newNumber) => {
         setNumberOfAdditionalFields(prevNumber => {
             let newNumberOfAdditionalFields;
-            if (newNumber < 1) {
+            if (newNumber < 0) {
                 newNumberOfAdditionalFields = 1;
             }
             else {
@@ -93,7 +103,7 @@ const CampaignCreation = () => {
     const nameRegex = new RegExp(/^[a-zA-Z0-9 ]+$/);
     const votingTypeRegex = new RegExp(/^(Default|Ranked)$/);
     const datetimeISORegex = new RegExp(/^(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))$/);
-    const domainsRegex = new RegExp(/^([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*(, )?)+$/);
+    const domainsRegex = new RegExp(/^([a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(, )?)+$/);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -155,7 +165,8 @@ const CampaignCreation = () => {
             numberOfCandidates,
             areAdditionalFields,
             numberOfAdditionalFields,
-            candidates
+            candidates,
+            areCandidatesValid
         });
     }
 
@@ -183,7 +194,7 @@ const CampaignCreation = () => {
                         id="CampaignNameError"
                         place="bottom"
                         effect="solid"
-                        hidden={!campaignName || nameRegex.test(campaignName)}
+                        hidden={nameRegex.test(campaignName)}
                     />
                 </div>
                 <div className="flex flex-col">
@@ -205,7 +216,7 @@ const CampaignCreation = () => {
                         id="CampaignDescriptionError"
                         place="bottom"
                         effect="solid"
-                        hidden={!campaignDescription || campaignDescription.length >= 10}
+                        hidden={campaignDescription.length >= 10}
                     />
                 </div>
                 <div className="flex flex-col">
@@ -229,7 +240,7 @@ const CampaignCreation = () => {
                         id="VotingTypeError"
                         place="bottom"
                         effect="solid"
-                        hidden={!votingType || votingTypeRegex.test(votingType)}
+                        hidden={votingTypeRegex.test(votingType)}
                     />
                 </div>
                 <div className="flex flex-col">
@@ -237,7 +248,7 @@ const CampaignCreation = () => {
                     <a
                         data-tooltip-id="CampaignStartError"
                         data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid start date."
+                        data-tooltip-content="Please enter a valid start datetime like 2024-04-24T20:50."
                     >
                         <input
                             type="datetime-local"
@@ -250,7 +261,7 @@ const CampaignCreation = () => {
                         id="CampaignStartError"
                         place="bottom"
                         effect="solid"
-                        hidden={!campaignStart || datetimeISORegex.test(campaignStart)}
+                        hidden={datetimeISORegex.test(campaignStart)}
                     />
                 </div>
                 <div className="flex flex-col">
@@ -258,7 +269,7 @@ const CampaignCreation = () => {
                     <a
                         data-tooltip-id="CampaignEndError"
                         data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid end date."
+                        data-tooltip-content="Please enter a valid end date like 2024-04-24T20:50."
                     >
                         <input
                             type="datetime-local"
@@ -271,7 +282,7 @@ const CampaignCreation = () => {
                         id="CampaignEndError"
                         place="bottom"
                         effect="solid"
-                        hidden={!campaignEnd || datetimeISORegex.test(campaignEnd)}
+                        hidden={datetimeISORegex.test(campaignEnd)}
                     />
                 </div>
                 <div className="flex flex-col">
@@ -304,7 +315,7 @@ const CampaignCreation = () => {
                             id="DomainsError"
                             place="bottom"
                             effect="solid"
-                            hidden={!domains || domainsRegex.test(domains.join(', '))}
+                            hidden={domainsRegex.test(domains.join(', '))}
                         />
                     </div>
                 )}
@@ -320,7 +331,6 @@ const CampaignCreation = () => {
                             className="p-2 border rounded-lg border-gray-300 w-full"
                             value={numberOfCandidates}
                             onChange={(e) => changeNumberOfCandidates(e.target.value)}
-                            min={2}
                             required
                         />
                     </a>
@@ -366,7 +376,14 @@ const CampaignCreation = () => {
                 )}
 
                 {Array.from({ length: numberOfCandidates }, (_, index) => {
-                    return <Candidate key={index} index={index} areAdditionalFields={areAdditionalFields} numberOfAdditionalFields={numberOfAdditionalFields} addCandidate={addCandidate} />
+                    return <Candidate 
+                                key={index}
+                                index={index}
+                                areAdditionalFields={areAdditionalFields}
+                                numberOfAdditionalFields={numberOfAdditionalFields}
+                                addCandidate={addCandidate}
+                                changeAreCandidatesValid={changeAreCandidatesValid}
+                            />
                 })}
 
                 <button

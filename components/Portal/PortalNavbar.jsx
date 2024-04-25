@@ -22,7 +22,7 @@ const Navbar = () => {
           Manage Campaigns
         </button>
       </Link>
-      <Link href="/portal/campaigns/vote">
+      <Link href="/portal/vote">
         <button className="items-center rounded-[10px] border-[2px] hover:bg-gray-700  px-3 py-2 hover:underline">
           Vote
         </button>

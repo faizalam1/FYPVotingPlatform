@@ -13,29 +13,26 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user?.email) {
-        return { ...token, ...user };
+      if (user) {
+        token = { ...token, user };
       }
-
       if (token?.accessTokenExpires) {
         if (Date.now() / 1000 < token?.accessTokenExpires) {
-          return { ...token, ...user };
+          return { ...token };
         }
       } else if (token?.refreshToken) {
         return refreshAccessToken(token);
       }
 
-      return { ...token, ...user };
+      return { ...token };
     },
     async session({ session, token }) {
       if (
-        Date.now() / 1000 > token?.accessTokenExpires &&
-        token?.refreshTokenExpires &&
-        Date.now() / 1000 > token?.refreshTokenExpires
+        Date.now() / 1000 > token?.exp
       ) {
         return {
           error: new Error(
-            "Refresh token has expired. Please log in again to get a new refresh token."
+            "Token has expired. Please log in again to get a new token."
           ),
         };
       }
@@ -68,7 +65,10 @@ export const authOptions = {
             console.error("User is locked!", email);
             throw new Error("User is locked!");
           }
-          const isPasswordCorrect = await bcrypt.compare(password, user?.password);
+          const isPasswordCorrect = await bcrypt.compare(
+            password,
+            user?.password
+          );
           if (!isPasswordCorrect) {
             user.loginAttempts += 1;
             if (user.loginAttempts >= 5) {
@@ -88,6 +88,7 @@ export const authOptions = {
             id: user._id,
             email: user.email,
             name: user.firstName + " " + user.lastName,
+            username: user.username,
           };
         } else {
           console.error("Invalid credentials!", email, password);

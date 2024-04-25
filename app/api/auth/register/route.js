@@ -5,14 +5,24 @@ import { sendVerificationCode } from "@/utils/sendVerificationCode";
 
 export async function POST(req) {
   const body = await req.json();
-  const { email, password, firstName, lastName } = body;
+  const { email, password, firstName, lastName, username } = body;
 
   const emailRegex = new RegExp(/^[\w\\.\\+]+@([\w-]+\.)+[\w-]{2,}$/);
   const passwordRegex = new RegExp(
     /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/
   );
   const nameRegex = new RegExp(/^[a-zA-Z ]+$/);
+  const usernameRegex = new RegExp(/^[a-zA-Z][a-zA-Z0-9_]*$/);
 
+  if (!usernameRegex.test(username)) {
+    return NextResponse.json(
+      {
+        error:
+          "Username invalid, it should start with letters and contain only letters, numbers and underscores!",
+      },
+      { status: 400 }
+    );
+  }
   if (!emailRegex.test(email)) {
     return NextResponse.json({ error: "Email invalid!" }, { status: 400 });
   }
@@ -55,7 +65,15 @@ export async function POST(req) {
     );
   }
 
-  const user = await User.create({ email, password, firstName, lastName });
+  const usernameExists = await User.findOne({ username });
+  if (usernameExists) {
+    return NextResponse.json(
+      { error: "Username already exists!" },
+      { status: 409 }
+    );
+  }
+
+  const user = await User.create({ email, password, firstName, lastName, username });
   console.log(user);
   if (!user) {
     return NextResponse.json(

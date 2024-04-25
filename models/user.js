@@ -8,6 +8,15 @@ const UserSchema = new Schema({
     required: [true, "Email is required!"],
     match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$/, "Email invalid!"],
   },
+  username: {
+    type: String,
+    unique: [true, "Username already exists!"],
+    required: [true, "Username is required!"],
+    match: [
+      /^[a-zA-Z][a-zA-Z0-9_]*$/,
+      "Username invalid, it should start with letters and contain only letters, numbers and underscores!",
+    ],
+  },
   password: {
     type: String,
     required: [true, "Password is required!"],

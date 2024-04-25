@@ -8,12 +8,14 @@ const Signup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
 
   const nameRegex = new RegExp(/^[a-zA-Z ]+$/);
   const emailRegex = new RegExp(/^[\w\\.\\+]+@([\w-]+\.)+[\w-]{2,}$/);
   const passwordRegex = new RegExp(/^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/);
+  const usernameRegex = new RegExp(/^[a-zA-Z][a-zA-Z0-9_]*$/);
 
   const router = useRouter();
 
@@ -29,6 +31,7 @@ const Signup = () => {
         password: password,
         firstName: firstName,
         lastName: lastName,
+        username: username
       }),
     });
     console.log(response)
@@ -132,6 +135,30 @@ const Signup = () => {
           />
         </div>
         <div>
+          <label htmlFor="username">Username</label>
+          <a
+            data-tooltip-id="usernameError"
+            data-tooltip-variant="error"
+            data-tooltip-content="Please enter a valid username. It should start with letters and contain only letters, numbers and underscores!"
+          >
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="p-2 border rounded-lg border-gray-300 w-full"
+            />
+          </a>
+          <Tooltip
+            id="usernameError"
+            place="bottom"
+            effect="solid"
+            hidden={!username || usernameRegex.test(username)}
+          />
+        </div>
+        <div>
           <label htmlFor="password">Password</label>
           <a
             data-tooltip-id="passwordError"
@@ -186,6 +213,7 @@ const Signup = () => {
             !nameRegex.test(firstName) ||
             !nameRegex.test(lastName) ||
             !emailRegex.test(email) ||
+            !usernameRegex.test(username) ||
             passwordRegex.test(password) ||
             password != password2} 
             className="p-2 bg-green-500 rounded-xl text-white hover:bg-green-700 font-medium w-full">

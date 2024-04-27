@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Tooltip } from "react-tooltip";
 
-const Candidate = ({ index, areAdditionalFields, numberOfAdditionalFields, addCandidate, changeAreCandidatesValid }) => {
+const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalFields, addCandidate, changeAreCandidatesValid }) => {
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [image, setImage] = useState(null)
@@ -111,7 +111,7 @@ const Candidate = ({ index, areAdditionalFields, numberOfAdditionalFields, addCa
                 />
                 {image && (<Image className='rounded-3xl' src={image} alt={`Candidate ${index + 1} Image`} width={128} height={128} />)}
             </div>
-            {areAdditionalFields && (
+            {areAdditionalFieldsRequired && (
                 Array.from({ length: numberOfAdditionalFields }, (_, index2) => {
                     return (
                         <div key={index2} className="flex flex-col">

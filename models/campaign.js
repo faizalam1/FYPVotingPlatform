@@ -17,11 +17,11 @@ const CampaignSchema = new Schema({
         enum: ["Default", "Ranked"],
         required: [true, "Campaign voting type is required!"],
     },
-    startDate: {
+    startDateTime: {
         type: Date,
         required: [true, "Campaign start date is required!"],
     },
-    endDate: {
+    endDateTime: {
         type: Date,
         min: [Date.now, "Campaign end date is invalid!"],
         required: [true, "Campaign end date is required!"],

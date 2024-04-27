@@ -13,6 +13,21 @@ const CandidateSchema = new Schema({
         type: String,
         required: [true, "Candidate image is required!"],
     },
+    additionalFields: {
+        type: [
+            {
+                name: {
+                    type: String,
+                    required: [true, "Additional field name is required!"],
+                },
+                value: {
+                    type: String,
+                    required: [true, "Additional field value is required!"],
+                },
+            },
+        ],
+        default: [],
+    },
     campaignId: {
         type: Schema.Types.ObjectId,
         ref: "Campaign",

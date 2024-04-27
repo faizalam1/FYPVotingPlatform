@@ -1,3 +1,4 @@
+import { connectToDatabase } from "@/utils/database";
 import { User } from "@/models/user";
 import { UserVerification } from "@/models/userVerification";
 import { NextResponse } from "next/server";
@@ -12,7 +13,15 @@ export async function POST(req) {
       { status: 400 }
     );
   }
-
+  try{
+    await connectToDatabase();
+  }
+  catch(err){
+    return NextResponse.json(
+      { error: "Internal Server Error!" },
+      { status: 500 }
+    );
+  }
   const user = await User.findOne({ email });
   if (!user) {
     return NextResponse.json(

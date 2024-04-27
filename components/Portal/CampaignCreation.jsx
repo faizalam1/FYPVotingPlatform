@@ -9,10 +9,10 @@ const CampaignCreation = () => {
     const [votingType, setVotingType] = useState('Default');
     const [campaignStart, setCampaignStart] = useState('');
     const [campaignEnd, setCampaignEnd] = useState('');
-    const [isDomainRestricted, setIsDomainRestricted] = useState(false);
+    const [isRestrictedByEmail, setIsRestrictedByEmail] = useState(false);
     const [domains, setDomains] = useState([]);
     const [numberOfCandidates, setNumberOfCandidates] = useState(2);
-    const [areAdditionalFields, setAreAdditionalFields] = useState(false);
+    const [areAdditionalFieldsRequired, setAreAdditionalFieldsRequired] = useState(false);
     const [numberOfAdditionalFields, setNumberOfAdditionalFields] = useState(0);
     const [candidates, setCandidates] = useState(Array.from({ length: numberOfCandidates }, (_, index) => {
         return { name: '', description: '', image: null, additionalFields: [] }
@@ -104,6 +104,8 @@ const CampaignCreation = () => {
     const votingTypeRegex = new RegExp(/^(Default|Ranked)$/);
     const datetimeISORegex = new RegExp(/^(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))$/);
     const domainsRegex = new RegExp(/^([a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(, )?)+$/);
+    const campaignStartDateTime = new Date(campaignStart);
+    const campaignEndDateTime = new Date(campaignEnd);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -124,11 +126,15 @@ const CampaignCreation = () => {
             alert("Please enter valid start and end dates");
             return;
         }
-        if (campaignStart >= campaignEnd) {
+        if (campaignEndDateTime <= new Date()) {
+            alert("Campaign End should be in the future");
+            return;
+        }
+        if (campaignStartDateTime >= campaignEndDateTime) {
             alert("Campaign End should be after Campaign Start");
             return;
         }
-        if (isDomainRestricted && domains.length === 0) {
+        if (isRestrictedByEmail && domains.length === 0) {
             alert("Please enter atleast one domain");
             return;
         }
@@ -136,38 +142,48 @@ const CampaignCreation = () => {
             alert("Please enter atleast 2 candidates");
             return;
         }
-        if (areAdditionalFields && numberOfAdditionalFields < 1) {
+        if (areAdditionalFieldsRequired && numberOfAdditionalFields < 1) {
             alert("Please enter atleast 1 additional field");
             return;
         }
-        for (let i = 0; i < numberOfCandidates; i++) {
-            if (candidates[i].name === '' || candidates[i].description === '') {
-                alert("Please fill all candidate details");
-                return;
-            }
-            if (areAdditionalFields) {
-                for (let j = 0; j < numberOfAdditionalFields; j++) {
-                    if (candidates[i].additionalFields[j].name === '' || candidates[i].additionalFields[j].value === '') {
-                        alert("Please fill all additional fields");
-                        return;
-                    }
-                }
-            }
+        if (!areCandidatesValid){
+            alert("Please fill all candidate details");
+            return;
         }
-        console.log({
-            campaignName,
-            campaignDescription,
-            votingType,
-            campaignStart,
-            campaignEnd,
-            isDomainRestricted,
-            domains,
-            numberOfCandidates,
-            areAdditionalFields,
-            numberOfAdditionalFields,
-            candidates,
-            areCandidatesValid
-        });
+        if (
+            campaign.candidates.every(candidate => 
+                candidateNameRegex.test(candidate.name) && 
+                candidate.description.length >= 10 && 
+                candidate.additionalFields.length === numberOfAdditionalFields &&
+                candidate.additionalFields.every(field => field.name && field.value)
+            )
+        ){
+            alert("Please fill all candidate details");
+            return;
+        }
+        const res = fetch('/api/portal/campaigns/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                campaignName,
+                campaignDescription,
+                votingType,
+                campaignStart,
+                campaignEnd,
+                isRestrictedByEmail,
+                domains,
+                numberOfCandidates,
+                areAdditionalFieldsRequired,
+                numberOfAdditionalFields,
+                candidates,
+                areCandidatesValid
+            })
+        })
+
+        if (res.status == 201)
+            alert("Campaign Created Successfully");
     }
 
     return (
@@ -282,20 +298,24 @@ const CampaignCreation = () => {
                         id="CampaignEndError"
                         place="bottom"
                         effect="solid"
-                        hidden={datetimeISORegex.test(campaignEnd)}
+                        hidden={
+                            datetimeISORegex.test(campaignEnd)
+                            ||
+                            new Date(campaignStart) < new Date(campaignEnd)
+                        }
                     />
                 </div>
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">
                         <input
                             type="checkbox"
-                            checked={isDomainRestricted}
-                            onChange={(e) => setIsDomainRestricted(e.target.checked)}
+                            checked={isRestrictedByEmail}
+                            onChange={(e) => setIsRestrictedByEmail(e.target.checked)}
                         />
                         Restrict Voters to specific domain
                     </label>
                 </div>
-                {isDomainRestricted && (
+                {isRestrictedByEmail && (
                     <div className="flex flex-col">
                         <label className="text-sm font-semibold">Allowed Domains</label>
                         <a
@@ -345,13 +365,13 @@ const CampaignCreation = () => {
                     <label className="text-sm font-semibold">
                         <input
                             type="checkbox"
-                            checked={areAdditionalFields}
-                            onChange={(e) => setAreAdditionalFields(e.target.checked)}
+                            checked={areAdditionalFieldsRequired}
+                            onChange={(e) => setAreAdditionalFieldsRequired(e.target.checked)}
                         />
                         Add Additional fields for Candidates
                     </label>
                 </div>
-                {areAdditionalFields && (
+                {areAdditionalFieldsRequired && (
                     <div className="flex flex-col">
                         <label className="text-sm font-semibold">Number of Additional Fields</label>
                         <a
@@ -379,7 +399,7 @@ const CampaignCreation = () => {
                     return <Candidate 
                                 key={index}
                                 index={index}
-                                areAdditionalFields={areAdditionalFields}
+                                areAdditionalFieldsRequired={areAdditionalFieldsRequired}
                                 numberOfAdditionalFields={numberOfAdditionalFields}
                                 addCandidate={addCandidate}
                                 changeAreCandidatesValid={changeAreCandidatesValid}

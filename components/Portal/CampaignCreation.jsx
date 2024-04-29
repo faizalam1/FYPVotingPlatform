@@ -183,6 +183,39 @@ const CampaignCreation = () => {
                 formData.append(`candidate${index}-additionalField${index2}-value`, field.value);
             });
         });
+        
+        console.log(
+            {
+                campaignName: formData.get('campaignName'),
+                campaignDescription: formData.get('campaignDescription'),
+                votingType: formData.get('votingType'),
+                campaignStart: formData.get('campaignStart'),
+                campaignEnd: formData.get('campaignEnd'),
+                isRestrictedByEmail: formData.get('isRestrictedByEmail'),
+                domains: formData.get('domains'),
+                numberOfCandidates: formData.get('numberOfCandidates'),
+                areAdditionalFieldsRequired: formData.get('areAdditionalFieldsRequired'),
+                numberOfAdditionalFields: formData.get('numberOfAdditionalFields'),
+                areCandidatesValid: formData.get('areCandidatesValid'),
+            });
+        let candidates = [];
+        for (let i = 0; i < parseInt(formData.get('numberOfCandidates')); i++) {
+            let candidate = {
+                name: formData.get(`candidate${i}-name`),
+                description: formData.get(`candidate${i}-description`),
+                image: formData.get(`candidate${i}-image`),
+                additionalFields: []
+            };
+            for (let j = 0; j < parseInt(formData.get('numberOfAdditionalFields')); j++) {
+                candidate.additionalFields.push({
+                    name: formData.get(`candidate${i}-additionalField${j}-name`),
+                    value: formData.get(`candidate${i}-additionalField${j}-value`)
+                });
+            }
+            candidates.push(candidate);
+        }
+        console.log(candidates);
+        
 
         const res = await fetch('/api/portal/campaigns/create', {
             method: 'POST',

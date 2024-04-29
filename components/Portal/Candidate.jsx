@@ -7,6 +7,7 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
     const [description, setDescription] = useState('')
     const [image, setImage] = useState(null)
     const [additionalFields, setAdditionalFields] = useState([])
+    const [imageFile, setImageFile] = useState(null)
 
     const nameRegex = /^[a-zA-Z]([a-zA-Z0-9\-_ ]*[a-zA-Z0-9])?$/
 
@@ -31,7 +32,7 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
 
 
     useEffect(() => {
-        addCandidate(name, description, image, additionalFields, index);
+        addCandidate(name, description, imageFile, additionalFields, index);
         changeAreCandidatesValid(nameRegex.test(name) && description.length >= 10 && additionalFields.every(field => field.name && field.value))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [name, description, image, additionalFields])
@@ -49,6 +50,20 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
             console.error(`Index ${i} out of bounds for additionalFields array`);
         }
     }
+
+    const handleImageChange = (e) => {
+        const filetype = e.target.files[0].name.split('.').pop()
+        if (filetype !== 'jpg' && filetype !== 'jpeg' && filetype !== 'png') {
+            alert('Please upload a valid image file');
+            return;
+        }
+
+        const file = new File([e.target.files[0]], `${name}.${filetype}`);
+
+        setImage(URL.createObjectURL(file));
+        setImageFile(file);
+    }
+
 
     return (
         <>
@@ -104,10 +119,7 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
                     type="file"
                     className="border border-gray-200 rounded-lg p-2 mb-2"
                     accept='image/*'
-                    onChange={(e) => {
-                        const file = e.target.files[0];
-                        setImage(URL.createObjectURL(file));
-                    }}
+                    onChange={handleImageChange}
                 />
                 {image && (<Image className='rounded-3xl' src={image} alt={`Candidate ${index + 1} Image`} width={128} height={128} />)}
             </div>

@@ -107,7 +107,7 @@ const CampaignCreation = () => {
     const campaignStartDateTime = new Date(campaignStart);
     const campaignEndDateTime = new Date(campaignEnd);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
         if (nameRegex.test(campaignName) === false) {
@@ -161,25 +161,32 @@ const CampaignCreation = () => {
             alert("Please fill all candidate details");
             return;
         }
-        const res = fetch('/api/portal/campaigns/create', {
+
+        const formData = new FormData();
+        formData.append('campaignName', campaignName);
+        formData.append('campaignDescription', campaignDescription);
+        formData.append('votingType', votingType);
+        formData.append('campaignStart', campaignStart);
+        formData.append('campaignEnd', campaignEnd);
+        formData.append('isRestrictedByEmail', isRestrictedByEmail);
+        formData.append('domains', domains.join(', '));
+        formData.append('numberOfCandidates', numberOfCandidates);
+        formData.append('areAdditionalFieldsRequired', areAdditionalFieldsRequired);
+        formData.append('numberOfAdditionalFields', numberOfAdditionalFields);
+        formData.append('areCandidatesValid', areCandidatesValid);
+        candidates.forEach((candidate, index) => {
+            formData.append(`candidate${index}-name`, candidate.name);
+            formData.append(`candidate${index}-description`, candidate.description);
+            formData.append(`candidate${index}-image`, candidate.image);
+            candidate.additionalFields.forEach((field, index2) => {
+                formData.append(`candidate${index}-additionalField${index2}-name`, field.name);
+                formData.append(`candidate${index}-additionalField${index2}-value`, field.value);
+            });
+        });
+
+        const res = await fetch('/api/portal/campaigns/create', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                campaignName,
-                campaignDescription,
-                votingType,
-                campaignStart,
-                campaignEnd,
-                isRestrictedByEmail,
-                domains,
-                numberOfCandidates,
-                areAdditionalFieldsRequired,
-                numberOfAdditionalFields,
-                candidates,
-                areCandidatesValid
-            })
+            body: formData
         })
 
         if (res.status == 201)

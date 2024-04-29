@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Tooltip } from "react-tooltip";
 
-const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalFields, addCandidate, changeAreCandidatesValid }) => {
+const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalFields, addCandidate }) => {
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [image, setImage] = useState(null)
@@ -33,7 +33,6 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
 
     useEffect(() => {
         addCandidate(name, description, imageFile, additionalFields, index);
-        changeAreCandidatesValid(nameRegex.test(name) && description.length >= 10 && additionalFields.every(field => field.name && field.value))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [name, description, image, additionalFields])
 

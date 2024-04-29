@@ -6,7 +6,7 @@ import { Candidate } from "@/models/candidate";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  const session = getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     return NextResponse.json({ error: "Unauthorized!" }, { status: 401 });
@@ -33,8 +33,6 @@ export async function POST(req) {
     campaign["numberOfAdditionalFields"] = parseInt(
       formdata.get("numberOfAdditionalFields")
     );
-    campaign["areCandidatesValid"] =
-      formdata.get("areCandidatesValid") == "true";
     campaign["candidates"] = [];
     for (let i = 0; i < campaign.numberOfCandidates; i++) {
       campaign.candidates.push({
@@ -60,7 +58,9 @@ export async function POST(req) {
   }
 
   const user = session.user;
-  console.log({ campaign, user });
+  console.log(campaign);
+  console.log(campaign.candidates)
+  console.log(user)
 
   const campaignNameRegex = new RegExp(/^[a-zA-Z0-9 ]+$/);
   const votingTypeRegex = new RegExp(/^(Default|Ranked)$/);
@@ -88,11 +88,11 @@ export async function POST(req) {
       (campaign.areAdditionalFieldsRequired
         ? campaign.numberOfAdditionalFields > 0
         : true) &&
-      campaign.areCandidatesValid &&
       campaign.candidates.every(
         (candidate) =>
           candidateNameRegex.test(candidate.name) &&
           candidate.description.length >= 10 &&
+          candidate.image instanceof File &&
           candidate.additionalFields.length ==
             campaign.numberOfAdditionalFields &&
           candidate.additionalFields.every((field) => field.name && field.value)

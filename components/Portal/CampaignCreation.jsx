@@ -17,21 +17,11 @@ const CampaignCreation = () => {
     const [candidates, setCandidates] = useState(Array.from({ length: numberOfCandidates }, (_, index) => {
         return { name: '', description: '', image: null, additionalFields: [] }
     }));
-    const [areCandidatesValid, setAreCandidatesValid] = useState(false);
 
     const convertDateTimetoUTC = (datetime) => {
         const date = new Date(datetime);
         return date.toISOString();
     }
-
-    const changeAreCandidatesValid = (newAreCandidatesValid) => {
-        if (newAreCandidatesValid) {
-            setAreCandidatesValid(prev => prev && newAreCandidatesValid);
-        }
-        else{
-            setAreCandidatesValid(newAreCandidatesValid);
-        }
-    };
 
     const changeNumberOfCandidates = (newNumber) => {
         setNumberOfCandidates(prevNumber => {
@@ -93,6 +83,7 @@ const CampaignCreation = () => {
                 newCandidates[index]["image"] = image;
             if (additionalFields != null)
                 newCandidates[index]["additionalFields"] = additionalFields;
+            
             setCandidates(newCandidates);
         }
         else{
@@ -104,8 +95,10 @@ const CampaignCreation = () => {
     const votingTypeRegex = new RegExp(/^(Default|Ranked)$/);
     const datetimeISORegex = new RegExp(/^(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))$/);
     const domainsRegex = new RegExp(/^([a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(, )?)+$/);
+    const candidateNameRegex = /^[a-zA-Z]([a-zA-Z0-9\-_ ]*[a-zA-Z0-9])?$/;
     const campaignStartDateTime = new Date(campaignStart);
     const campaignEndDateTime = new Date(campaignEnd);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -146,17 +139,13 @@ const CampaignCreation = () => {
             alert("Please enter atleast 1 additional field");
             return;
         }
-        if (!areCandidatesValid){
-            alert("Please fill all candidate details");
-            return;
-        }
         if (
-            campaign.candidates.every(candidate => 
+            !(candidates.every(candidate => 
                 candidateNameRegex.test(candidate.name) && 
                 candidate.description.length >= 10 && 
                 candidate.additionalFields.length === numberOfAdditionalFields &&
                 candidate.additionalFields.every(field => field.name && field.value)
-            )
+            ))
         ){
             alert("Please fill all candidate details");
             return;
@@ -173,7 +162,6 @@ const CampaignCreation = () => {
         formData.append('numberOfCandidates', numberOfCandidates);
         formData.append('areAdditionalFieldsRequired', areAdditionalFieldsRequired);
         formData.append('numberOfAdditionalFields', numberOfAdditionalFields);
-        formData.append('areCandidatesValid', areCandidatesValid);
         candidates.forEach((candidate, index) => {
             formData.append(`candidate${index}-name`, candidate.name);
             formData.append(`candidate${index}-description`, candidate.description);
@@ -196,9 +184,8 @@ const CampaignCreation = () => {
                 numberOfCandidates: formData.get('numberOfCandidates'),
                 areAdditionalFieldsRequired: formData.get('areAdditionalFieldsRequired'),
                 numberOfAdditionalFields: formData.get('numberOfAdditionalFields'),
-                areCandidatesValid: formData.get('areCandidatesValid'),
             });
-        let candidates = [];
+        let candidatesCheck = [];
         for (let i = 0; i < parseInt(formData.get('numberOfCandidates')); i++) {
             let candidate = {
                 name: formData.get(`candidate${i}-name`),
@@ -212,9 +199,9 @@ const CampaignCreation = () => {
                     value: formData.get(`candidate${i}-additionalField${j}-value`)
                 });
             }
-            candidates.push(candidate);
+            candidatesCheck.push(candidate);
         }
-        console.log(candidates);
+        console.log(candidatesCheck);
         
 
         const res = await fetch('/api/portal/campaigns/create', {
@@ -442,7 +429,6 @@ const CampaignCreation = () => {
                                 areAdditionalFieldsRequired={areAdditionalFieldsRequired}
                                 numberOfAdditionalFields={numberOfAdditionalFields}
                                 addCandidate={addCandidate}
-                                changeAreCandidatesValid={changeAreCandidatesValid}
                             />
                 })}
 

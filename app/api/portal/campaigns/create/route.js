@@ -1,8 +1,9 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectToDatabase } from "@/utils/database";
-import { Campaign } from "@/models/campaign";
-import { Candidate } from "@/models/candidate";
+import Campaign from "@/models/campaign";
+import Candidate  from "@/models/candidate";
+import uploadCandidatePicture from "@/utils/uploadCandidatePicture";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -15,7 +16,6 @@ export async function POST(req) {
   let campaign = {};
   try {
     const formdata = await req.formData();
-
 
     campaign["campaignName"] = formdata.get("campaignName");
     campaign["campaignDescription"] = formdata.get("campaignDescription");
@@ -59,8 +59,8 @@ export async function POST(req) {
 
   const user = session.user;
   console.log(campaign);
-  console.log(campaign.candidates)
-  console.log(user)
+  console.log(campaign.candidates);
+  console.log(user);
 
   const campaignNameRegex = new RegExp(/^[a-zA-Z0-9 ]+$/);
   const votingTypeRegex = new RegExp(/^(Default|Ranked)$/);
@@ -96,6 +96,19 @@ export async function POST(req) {
           candidate.additionalFields.length ==
             campaign.numberOfAdditionalFields &&
           candidate.additionalFields.every((field) => field.name && field.value)
+      ) &&
+      campaign.candidates.every(
+        (candidate) =>
+          campaign.candidates.filter((c) => c.name == candidate.name).length ==
+          1
+      ) &&
+      campaign.candidates.every(
+        (candidate) =>
+          candidate.image == null ||
+          (candidate.image instanceof File &&
+            candidate.image.name.split(".")[1].match(/(jpg|jpeg|png)/) &&
+            candidate.image.size <= 1024 * 1024 * 2 &&
+            candidate.image.name.split(".").length === 2)
       )
     )
   ) {
@@ -113,36 +126,55 @@ export async function POST(req) {
       { status: 500 }
     );
   }
+  const campaignNameExists = await Campaign.findOne({
+    name: campaign.campaignName,
+    createdBy: user.id,
+  });
+  if (campaignNameExists) {
+    return NextResponse.json(
+      { error: "Campaign name already exists!" },
+      { status: 400 }
+    );
+  }
+  const campaignRecord = await Campaign.create({
+    name: campaign.campaignName,
+    description: campaign.campaignDescription,
+    votingType: campaign.votingType,
+    startDateTime: new Date(campaign.campaignStart),
+    endDateTime: new Date(campaign.campaignEnd),
+    isRestrictedByEmail: campaign.isRestrictedByEmail,
+    restrictedDomains: campaign.domains,
+    numberOfCandidates: campaign.numberOfCandidates,
+    createdBy: user.id,
+  });
 
-  // const campaignNameExists = await Campaign.findOne({ name: campaign.campaignName, createdBy: user.id });
-  // if (campaignNameExists) {
-  //     return NextResponse.json(
-  //         { error: "Campaign name already exists!" },
-  //         { status: 400 }
-  //     );
-  // }
+  console.log(campaignRecord)
 
-  // const campaignRecord = await Campaign.create({
-  //     name: campaign.campaignName,
-  //     description: campaign.campaignDescription,
-  //     votingType: campaign.votingType,
-  //     startDateTime: new Date(campaign.campaignStart),
-  //     endDateTime: new Date(campaign.campaignEnd),
-  //     isRestrictedByEmail: campaign.isRestrictedByEmail,
-  //     restrictedDomains: campaign.domains,
-  //     numberOfCandidates: campaign.numberOfCandidates,
-  //     createdBy: user.id
-  // });
+  for (let i = 0; i < campaign.numberOfCandidates; i++) {
+    const candidate = campaign.candidates[i];
+    const candidateNameExists = await Candidate.findOne({
+      name: candidate.name,
+      campaign: campaignRecord.id,
+    });
+    if (candidateNameExists) {
+      return NextResponse.json(
+        { error: "Candidate name already exists!" },
+        { status: 400 }
+      );
+    }
+    let image = "";
+    if (candidate.image) 
+      image = await uploadCandidatePicture(candidate.image, `${user.name}/${campaignRecord.name}`);
+    const candidateRecord = await Candidate.create({
+      name: candidate.name,
+      description: candidate.description,
+      image: image,
+      additionalFields: candidate.additionalFields,
+      campaignID: campaignRecord._id,
+    });
+  }
+ 
 
-  // for (let i = 0; i < campaign.numberOfCandidates; i++) {
-  //     const candidate = campaign.candidates[i];
-  //     const candidateRecord = await Candidate.create({
-  //         name: candidate.name,
-  //         description: candidate.description,
-  //         additionalFields: candidate.additionalFields,
-  //         campaign: campaignRecord.id
-  //     });
-  // }
 
   return NextResponse.json(
     { message: "Campaign created successfully!" },

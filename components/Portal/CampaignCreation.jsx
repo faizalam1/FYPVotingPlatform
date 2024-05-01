@@ -32,8 +32,8 @@ const CampaignCreation = () => {
             else {
                 newNumberOfCandidates = newNumber;
             }
-            if (prevNumber < newNumber){
-                const newCandidates = Array.from({ length: newNumberOfCandidates-prevNumber }, (_, index) => {
+            if (prevNumber < newNumber) {
+                const newCandidates = Array.from({ length: newNumberOfCandidates - prevNumber }, (_, index) => {
                     return {
                         name: '', description: '', image: null, additionalFields: Array.from({ length: numberOfAdditionalFields }, (_, index) => {
                             return { name: '', value: '' }
@@ -43,11 +43,12 @@ const CampaignCreation = () => {
                 });
                 setCandidates(candidates.concat(newCandidates));
             }
-            else{
+            else {
                 setCandidates(candidates.slice(0, newNumberOfCandidates));
             }
             return newNumberOfCandidates;
-        })}
+        })
+    }
 
     const changeNumberOfAdditionalFields = (newNumber) => {
         setNumberOfAdditionalFields(prevNumber => {
@@ -59,18 +60,19 @@ const CampaignCreation = () => {
                 newNumberOfAdditionalFields = newNumber;
             }
             setCandidates(candidates.map(candidate => {
-                if (candidate.additionalFields.length < newNumberOfAdditionalFields){
-                    const newAdditionalFields = Array.from({ length: newNumberOfAdditionalFields-candidate.additionalFields.length }, (_, index) => {
+                if (candidate.additionalFields.length < newNumberOfAdditionalFields) {
+                    const newAdditionalFields = Array.from({ length: newNumberOfAdditionalFields - candidate.additionalFields.length }, (_, index) => {
                         return { name: '', value: '' }
                     });
                     return { ...candidate, additionalFields: candidate.additionalFields.concat(newAdditionalFields) };
                 }
-                else{
+                else {
                     return { ...candidate, additionalFields: candidate.additionalFields.slice(0, newNumberOfAdditionalFields) };
                 }
             }));
             return newNumberOfAdditionalFields;
-        })}
+        })
+    }
 
     const addCandidate = (name, description, image, additionalFields, index) => {
         let newCandidates = candidates.slice();
@@ -83,10 +85,10 @@ const CampaignCreation = () => {
                 newCandidates[index]["image"] = image;
             if (additionalFields != null)
                 newCandidates[index]["additionalFields"] = additionalFields;
-            
+
             setCandidates(newCandidates);
         }
-        else{
+        else {
             console.error(`Index ${index} out of bounds for candidates array`);
         }
     }
@@ -102,7 +104,7 @@ const CampaignCreation = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (nameRegex.test(campaignName) === false) {
             alert("Invalid Campaign Name");
             return;
@@ -140,16 +142,35 @@ const CampaignCreation = () => {
             return;
         }
         if (
-            !(candidates.every(candidate => 
-                candidateNameRegex.test(candidate.name) && 
-                candidate.description.length >= 10 && 
+            !(candidates.every(candidate =>
+                candidateNameRegex.test(candidate.name) &&
+                candidate.description.length >= 10 &&
                 candidate.additionalFields.length === numberOfAdditionalFields &&
                 candidate.additionalFields.every(field => field.name && field.value)
             ))
-        ){
+        ) {
             alert("Please fill all candidate details");
             return;
         }
+        if (!(candidates.every(
+            candidate =>
+                candidate.image == null ||
+                (candidate.image instanceof File &&
+                candidate.image.size <= 1024 * 1024 * 2 &&
+                candidate.image.name.split('.').length === 2 &&
+                candidate.image.name.split('.')[1].match(/(jpg|jpeg|png)/)
+                )
+        ))
+        ) {
+            
+            alert("Please upload valid images (jpg, jpeg, png) of upto 2 MBs for candidates");
+            return;
+        }
+        if (candidates.some(candidate => candidates.filter(c => c.name === candidate.name).length > 1)) {
+            alert("Candidate names should be unique");
+            return;
+        }
+
 
         const formData = new FormData();
         formData.append('campaignName', campaignName);
@@ -171,7 +192,7 @@ const CampaignCreation = () => {
                 formData.append(`candidate${index}-additionalField${index2}-value`, field.value);
             });
         });
-        
+
         console.log(
             {
                 campaignName: formData.get('campaignName'),
@@ -202,7 +223,7 @@ const CampaignCreation = () => {
             candidatesCheck.push(candidate);
         }
         console.log(candidatesCheck);
-        
+
 
         const res = await fetch('/api/portal/campaigns/create', {
             method: 'POST',
@@ -377,7 +398,7 @@ const CampaignCreation = () => {
                             type="number"
                             className="p-2 border rounded-lg border-gray-300 w-full"
                             value={numberOfCandidates}
-                            onChange={(e) => changeNumberOfCandidates(e.target.value)}
+                            onChange={(e) => changeNumberOfCandidates(parseInt(e.target.value))}
                             required
                         />
                     </a>
@@ -410,7 +431,7 @@ const CampaignCreation = () => {
                                 type="number"
                                 className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
                                 value={numberOfAdditionalFields}
-                                onChange={(e) => changeNumberOfAdditionalFields(e.target.value)}
+                                onChange={(e) => changeNumberOfAdditionalFields(parseInt(e.target.value))}
                             />
                         </a>
                         <Tooltip
@@ -421,15 +442,21 @@ const CampaignCreation = () => {
                         />
                     </div>
                 )}
+                <div>
+                    <p className='text-sm text-gray-400'>Note: Candidates names must be unique.</p>
+                </div>
+                <div>
+                    <h2 className="text-lg font-semibold mt-4">Candidates</h2>
+                </div>
 
                 {Array.from({ length: numberOfCandidates }, (_, index) => {
-                    return <Candidate 
-                                key={index}
-                                index={index}
-                                areAdditionalFieldsRequired={areAdditionalFieldsRequired}
-                                numberOfAdditionalFields={numberOfAdditionalFields}
-                                addCandidate={addCandidate}
-                            />
+                    return <Candidate
+                        key={index}
+                        index={index}
+                        areAdditionalFieldsRequired={areAdditionalFieldsRequired}
+                        numberOfAdditionalFields={numberOfAdditionalFields}
+                        addCandidate={addCandidate}
+                    />
                 })}
 
                 <button

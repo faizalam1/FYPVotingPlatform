@@ -28,7 +28,7 @@ const CandidateSchema = new Schema({
         ],
         default: [],
     },
-    campaignId: {
+    campaignID: {
         type: Schema.Types.ObjectId,
         ref: "Campaign",
         required: [true, "Candidate campaign is required!"],
@@ -38,3 +38,4 @@ const CandidateSchema = new Schema({
 CandidateSchema.index({ name: 1, campaignId: 1 }, { unique: true });
 
 const Candidate = models.Candidate || model("Candidate", CandidateSchema);
+export default Candidate;

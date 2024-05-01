@@ -12,7 +12,7 @@ const CampaignSchema = new Schema({
         minLength: [10, "Campaign description is too short!"],
         required: [true, "Campaign description is required!"],
     },
-    VotingType: {
+    votingType: {
         type: String,
         enum: ["Default", "Ranked"],
         required: [true, "Campaign voting type is required!"],

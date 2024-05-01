@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@azure/identity": "^4.2.0",
+    "@azure/storage-blob": "^12.17.0",
     "aws4": "^1.12.0",
     "bcrypt": "^5.1.1",
     "mailgun.js": "^10.2.1",

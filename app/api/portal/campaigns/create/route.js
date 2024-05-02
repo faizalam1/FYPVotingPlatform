@@ -164,7 +164,7 @@ export async function POST(req) {
     }
     let image = "";
     if (candidate.image) 
-      image = await uploadCandidatePicture(candidate.image, `${user.name}/${campaignRecord.name}`);
+      image = await uploadCandidatePicture(candidate.image, `${user.username}/${campaignRecord.name}`);
     const candidateRecord = await Candidate.create({
       name: candidate.name,
       description: candidate.description,

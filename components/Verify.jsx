@@ -28,7 +28,17 @@ const Verify = () => {
             alert("Invalid token!");
             return;
         }
-        const response = await fetch("/api/auth/verify?email=" + encodeURI(email) + "&token=" + encodeURI(token));
+        const response = await fetch("/api/auth/verify",{
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                token: token
+            })
+        }
+        );
         if (response.status == 200) {
             alert("Account verified! Login to continue")
             router.push("/app/auth");
@@ -55,7 +65,16 @@ const Verify = () => {
             alert("Invalid email!");
             return;
         }
-        fetch("/api/auth/requestToken?email=" + encodeURI(email))
+        fetch("/api/auth/requestToken",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email
+            })
+        
+        })
             .then((response) => {
                 console.log(response)
                 if (response.status == 200) {
@@ -136,7 +155,7 @@ const Verify = () => {
                     <button
                         onClick={resendCode}
                         disabled={!email || !emailRegex.test(email)}
-                        className="text-gray-900 bg-[#f3f4f6] border border-gray-300  hover:bg-gray-100 font-medium rounded-xl text-sm px-5 py-2.5 me-2 mb-2 hover:bg-gray-200"
+                        className="text-gray-900 bg-[#f3f4f6] border border-gray-300  font-medium rounded-xl text-sm px-5 py-2.5 me-2 mb-2 hover:bg-gray-200"
                     >
                         Resend Verification Code
                     </button>

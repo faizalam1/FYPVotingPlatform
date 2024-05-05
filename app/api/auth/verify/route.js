@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import User from "@/models/user";
 import UserVerification from "@/models/userVerification";
 
-export async function GET(req) {
+export async function PATCH(req) {
   try {
     await connectToDatabase();
   } catch (err) {

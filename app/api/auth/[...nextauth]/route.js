@@ -16,8 +16,8 @@ export const authOptions = {
       if (user) {
         token = { ...token, user };
       }
-      if (token?.accessTokenExpires) {
-        if (Date.now() / 1000 < token?.accessTokenExpires) {
+      if (token?.exp) {
+        if (Date.now() / 1000 < token?.exp) {
           return { ...token };
         }
       } else if (token?.refreshToken) {

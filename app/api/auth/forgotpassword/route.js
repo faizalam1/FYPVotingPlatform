@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/utils/database";
 import { sendVerificationCode } from "@/utils/sendVerificationCode";
 
-export async function GET(req) {
+export async function POST(req) {
   try {
     await connectToDatabase();
   } catch (err) {
@@ -13,8 +13,8 @@ export async function GET(req) {
       { status: 500 }
     );
   }
-  const { searchParams } = new URL(req.url);
-  const email = searchParams.get("email");
+  const body = await req.json();
+  const { email } = body;
   const user = await User.findOne({ email });
 
   if (!user) {

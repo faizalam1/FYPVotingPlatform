@@ -4,7 +4,7 @@ import { UserVerification } from "@/models/userVerification";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
-export async function POST(req) {
+export async function PATCH(req) {
   const body = await req.json();
   const { email, token, password } = body;
   if (!email || !token || !password) {

@@ -23,7 +23,13 @@ const Signin = () => {
       alert("Invalid email!");
       return;
     }
-    const response = await fetch("/api/auth/forgotpassword?email=" + encodeURI(email));
+    const response = await fetch("/api/auth/forgotpassword", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     if (response.status == 200) {
       alert("Password reset code sent to your email!")
       router.push("/app/auth/changepassword");

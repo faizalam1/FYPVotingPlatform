@@ -3,7 +3,7 @@ import { connectToDatabase } from "@/utils/database";
 import { NextResponse } from "next/server";
 import { sendVerificationCode } from "@/utils/sendVerificationCode";
 
-export async function GET(req) {
+export async function POST(req) {
   try {
     await connectToDatabase();
   } catch (err) {

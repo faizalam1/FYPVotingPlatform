@@ -24,14 +24,11 @@ export async function PATCH(req) {
         !votingType ||
         !startDateTime ||
         !endDateTime ||
-        !isRestrictedByEmail ||
-        !restrictedDomains ||
         !nameRegex.test(name) ||
         !datetimeISORegex.test(startDateTime) ||
         !datetimeISORegex.test(endDateTime) ||
         !votingTypeRegex.test(votingType) ||
-        !domainsRegex.test(restrictedDomains.join(", "))||
-        (isRestrictedByEmail && restrictedDomains.length === 0)
+        (isRestrictedByEmail && restrictedDomains.length === 0 && !domainsRegex.test(restrictedDomains.join(", ")))
     ){
         return NextResponse.json({ error: "Invalid Campaign Data!" }, { status: 400 });
     }

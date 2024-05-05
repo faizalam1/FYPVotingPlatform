@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
-import UserCampaigns from '@/components/Portal/UserCampaigns';
+import UserCampaigns from '@/components/Portal/Campaigns/UserCampaigns';
 
 const UserCampaignsPage = async ({ params }) => {
   const session = await getServerSession(authOptions);

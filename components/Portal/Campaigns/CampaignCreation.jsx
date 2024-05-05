@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import Candidate from '@/components/Portal/Candidate'
+import Candidate from '@/components/Portal/Campaigns/Candidate'
 import { Tooltip } from "react-tooltip";
 
 const CampaignCreation = () => {

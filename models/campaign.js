@@ -44,11 +44,6 @@ const CampaignSchema = new Schema({
         }, "Campaign restricted domains are required!"],
         default: [],
     },
-    numberOfCandidates: {
-        type: Number,
-        min: [2, "Campaign number of candidates is too low!"],
-        required: [true, "Campaign number of candidates is required!"],
-    },
     createdAt: {
         type: Date,
         default: Date.now,

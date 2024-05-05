@@ -1,13 +1,12 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { redirect } from 'next/navigation';
+import EditCampaign from '@/components/Portal/Campaigns/EditCampaign';
 
 const page = async ({ params }) => {
-    const session = await getServerSession(authOptions);
-    const user = session.user;
-    
     return (
-        <div>{params.campaignID}</div>
+        <div className='flex-grow flex flex-col justify-center items-center w-full'>
+            <EditCampaign campaignID={params.campaignID} />
+        </div>
     )
 }
 

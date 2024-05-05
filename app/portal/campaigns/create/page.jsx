@@ -1,4 +1,4 @@
-import CampaignCreation from '@/components/Portal/CampaignCreation'
+import CampaignCreation from '@/components/Portal/Campaigns/CampaignCreation'
 
 const CampaignCreationPage = () => {
   return (

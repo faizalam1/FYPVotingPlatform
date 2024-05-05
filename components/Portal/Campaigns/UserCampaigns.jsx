@@ -8,9 +8,24 @@ const UserCampaigns = () => {
   const [campaigns, setCampaigns] = useState([]);
   const router = useRouter();
   useEffect(() => {
-    fetch('/api/portal/campaigns/listUserCampaigns')
-      .then(res => res.json())
-      .then(data => setCampaigns(data))
+    const fetchCampaigns = async () => {
+      const response = await fetch('/api/portal/campaigns/listUserCampaigns');
+      if (response.status == 200) {
+        const data = await response.json();
+        setCampaigns(data);
+      }
+      else if (response.status == 204) {
+        alert("No campaigns found");
+        setCampaigns([]);
+      }
+      else if (response.status == 401) {
+        alert("Unauthorized");
+      }
+      else {
+        alert("Error fetching campaigns");
+      }
+    }
+    fetchCampaigns();
   }, [])
 
   const redirectToEditCampaign = (id) => {

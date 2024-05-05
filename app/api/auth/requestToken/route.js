@@ -13,8 +13,8 @@ export async function POST(req) {
       { status: 500 }
     );
   }
-  const {searchParams} = new URL(req.url);
-  const email = searchParams.get('email');
+  const body = await req.json();
+  const { email } = body;
   const user = await User.findOne({ email });
 
   const sendVerificationEmail = await sendVerificationCode(email, user);

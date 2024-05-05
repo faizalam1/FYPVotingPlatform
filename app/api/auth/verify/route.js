@@ -13,9 +13,8 @@ export async function PATCH(req) {
     );
   }
 
-  const { searchParams } = new URL(req.url);
-  const email = searchParams.get("email");
-  const token = searchParams.get("token");
+  const body = await req.json();
+  const { email, token } = body;
   
   if (!email || !token) {
     return NextResponse.json(

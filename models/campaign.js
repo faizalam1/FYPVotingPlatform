@@ -32,16 +32,6 @@ const CampaignSchema = new Schema({
     },
     restrictedDomains: {
         type: [String],
-        validate: {
-            validator: function (v) {
-                const domainRegex = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-                return v.every((domain) => domainRegex.test(domain));
-            },
-            message: "Campaign restricted domains are invalid!",
-        },
-        required: [function () {
-            return this.isRestrictedByEmail;
-        }, "Campaign restricted domains are required!"],
         default: [],
     },
     createdAt: {

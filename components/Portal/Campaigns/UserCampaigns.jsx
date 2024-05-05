@@ -78,11 +78,11 @@ const UserCampaigns = () => {
                ) 
                : new Date(campaign.startDateTime) > new Date() ?
                (
-                <div className="p-2 rounded-xl bg-[#1FAEFF] bg-opacity-40 text-[#08A4FC] w-fit">Upcoming</div>
+                <div className="p-2 rounded-3xl bg-[#1FAEFF] bg-opacity-40 text-[#08A4FC] w-fit">Upcoming</div>
                )
                :
                (
-                <div className="p-2 rounded-xl bg-[#ffaa98] text-[#74451c] font-semibold w-fit">Ended</div>
+                <div className="p-2 rounded-3xl bg-[#ffaa98] text-[#74451c] font-semibold w-fit">Ended</div>
                )
                }
             </div>

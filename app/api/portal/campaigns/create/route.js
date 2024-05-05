@@ -154,9 +154,10 @@ export async function POST(req) {
     const candidate = campaign.candidates[i];
     const candidateNameExists = await Candidate.findOne({
       name: candidate.name,
-      campaign: campaignRecord.id,
+      campaignID: campaignRecord.id,
     });
     if (candidateNameExists) {
+      console.log(candidateNameExists)
       return NextResponse.json(
         { error: "Candidate name already exists!" },
         { status: 400 }

@@ -35,7 +35,7 @@ const CandidateSchema = new Schema({
     }
 });
 
-CandidateSchema.index({ name: 1, campaignId: 1 }, { unique: true });
+CandidateSchema.index({ name: 1, campaignID: 1 }, { unique: true });
 
 const Candidate = models.Candidate || model("Candidate", CandidateSchema);
 export default Candidate;

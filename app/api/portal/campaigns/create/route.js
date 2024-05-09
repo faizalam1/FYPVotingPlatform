@@ -74,6 +74,7 @@ export async function POST(req) {
     !(
       campaignNameRegex.test(campaign.campaignName) &&
       campaign.campaignDescription.length >= 10 &&
+      campaign.campaignDescription.length < 500 &&
       votingTypeRegex.test(campaign.votingType) &&
       datetimeISORegex.test(campaign.campaignStart) &&
       datetimeISORegex.test(campaign.campaignEnd) &&
@@ -92,15 +93,13 @@ export async function POST(req) {
         (candidate) =>
           candidateNameRegex.test(candidate.name) &&
           candidate.description.length >= 10 &&
-          candidate.image instanceof File &&
-          candidate.additionalFields.length ==
-            campaign.numberOfAdditionalFields &&
+          candidate.description.length < 500 &&
+          candidate.additionalFields.length == campaign.numberOfAdditionalFields &&
           candidate.additionalFields.every((field) => field.name && field.value)
       ) &&
       campaign.candidates.every(
         (candidate) =>
-          campaign.candidates.filter((c) => c.name == candidate.name).length ==
-          1
+          campaign.candidates.filter((c) => c.name == candidate.name).length == 1
       ) &&
       campaign.candidates.every(
         (candidate) =>

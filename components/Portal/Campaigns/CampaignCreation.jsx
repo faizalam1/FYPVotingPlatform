@@ -109,8 +109,8 @@ const CampaignCreation = () => {
             alert("Invalid Campaign Name");
             return;
         }
-        if (campaignDescription.length < 10) {
-            alert("Campaign Description should be atleast 10 characters long");
+        if (campaignDescription.length < 10 || campaignDescription.length > 500) {
+            alert("Campaign Description should be atleast 10 characters long, not more than 500.");
             return;
         }
         if (votingTypeRegex.test(votingType) === false) {
@@ -145,11 +145,12 @@ const CampaignCreation = () => {
             !(candidates.every(candidate =>
                 candidateNameRegex.test(candidate.name) &&
                 candidate.description.length >= 10 &&
+                candidate.description.length < 500 &&
                 candidate.additionalFields.length === numberOfAdditionalFields &&
                 candidate.additionalFields.every(field => field.name && field.value)
             ))
         ) {
-            alert("Please fill all candidate details");
+            alert("Please fill all candidate details correctly.");
             return;
         }
         if (!(candidates.every(
@@ -280,7 +281,7 @@ const CampaignCreation = () => {
                         id="CampaignDescriptionError"
                         place="bottom"
                         effect="solid"
-                        hidden={campaignDescription.length >= 10}
+                        hidden={campaignDescription.length >= 10 && campaignDescription.length < 500}
                     />
                 </div>
                 <div className="flex flex-col">

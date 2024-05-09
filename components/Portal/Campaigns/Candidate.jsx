@@ -58,6 +58,10 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
         }
 
         const file = new File([e.target.files[0]], `${name}.${filetype}`);
+        if (file.size > 1024 * 1024 * 2){
+            alert('Please upload an image file smaller than 2MB');
+            return;
+        }
 
         setImage(URL.createObjectURL(file));
         setImageFile(file);
@@ -72,7 +76,7 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
                 <a
                     data-tooltip-id={`candidate${index}-name-tooltip`}
                     data-tooltip-variant='error'
-                    data-tooltip-content='Please enter a valid candidate description. It should contain only letters, numbers, spaces, hyphens, and underscores. It should start with a letter and end with a letter or number.'
+                    data-tooltip-content='Please enter a valid candidate name. It should contain only letters, numbers, spaces, hyphens, and underscores. It should start with a letter and end with a letter or number.'
                 >
                     <input
                         type="text"
@@ -95,7 +99,7 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
                 <a
                     data-tooltip-id={`candidate${index}-description-tooltip`}
                     data-tooltip-variant='error'
-                    data-tooltip-content='Please enter a valid candidate description. It should contain atleast 10 characters.'
+                    data-tooltip-content='Please enter a valid candidate description. It should contain atleast 10 characters not more than 500 characters.'
                 >
                     <textarea
                         className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
@@ -109,7 +113,7 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
                     id={`candidate${index}-description-tooltip`}
                     place='bottom'
                     effect='solid'
-                    hidden={description.length >= 10}
+                    hidden={description.length >= 10 && description.length <= 500}
                 />
             </div>
             <div className="flex flex-col">
@@ -123,13 +127,13 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
                 {image && (<Image className='rounded-3xl' src={image} alt={`Candidate ${index + 1} Image`} width={128} height={128} />)}
             </div>
             {areAdditionalFieldsRequired && (
-                Array.from({ length: numberOfAdditionalFields }, (_, index2) => {
+                Array.from({ length: numberOfAdditionalFields }, (_, fieldIndex) => {
                     return (
-                        <div key={index2} className="flex flex-col">
-                            <h2 className="text-base font-semibold mt-4">Additional Field {index2 + 1}</h2>
+                        <div key={fieldIndex} className="flex flex-col">
+                            <h2 className="text-base font-semibold mt-4">Additional Field {fieldIndex + 1}</h2>
                             <div className='flex space-x-1 w-full'>
                                 <a
-                                    data-tooltip-id={`candidate${index}-additional${index2}-field-name-tooltip`}
+                                    data-tooltip-id={`candidate${index}-additional${fieldIndex}-field-name-tooltip`}
                                     data-tooltip-variant='error'
                                     data-tooltip-content='Please enter a field name.'
                                 >
@@ -137,19 +141,19 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
                                         className='border border-gray-200 rounded-lg p-2 mb-2 w-full'
                                         type='text'
                                         placeholder='Enter field name'
-                                        value={additionalFields[index2]?.name || ""}
-                                        onChange={(e) => addAdditionalField(e.target.value, null, index2)}
+                                        value={additionalFields[fieldIndex]?.name || ""}
+                                        onChange={(e) => addAdditionalField(e.target.value, null, fieldIndex)}
                                     />
                                 </a>
                                 <Tooltip
-                                    id={`candidate${index}-additional${index2}-field-name-tooltip`}
+                                    id={`candidate${index}-additional${fieldIndex}-field-name-tooltip`}
                                     place='bottom'
                                     effect='solid'
-                                    hidden={additionalFields[index2]?.name !== ""}
+                                    hidden={additionalFields[fieldIndex]?.name !== ""}
                                 />
                                 <p className='text-lg font-semibold pt-1'>:</p>
                                 <a
-                                    data-tooltip-id={`candidate${index}-additional${index2}-field-value-tooltip`}
+                                    data-tooltip-id={`candidate${index}-additional${fieldIndex}-field-value-tooltip`}
                                     data-tooltip-variant='error'
                                     data-tooltip-content='Please enter a field value.'
                                 >
@@ -157,15 +161,15 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
                                         className='border border-gray-200 rounded-lg p-2 mb-2 w-full'
                                         type='text'
                                         placeholder='Enter field value'
-                                        value={additionalFields[index2]?.value || ""}
-                                        onChange={(e) => addAdditionalField(null, e.target.value, index2)}
+                                        value={additionalFields[fieldIndex]?.value || ""}
+                                        onChange={(e) => addAdditionalField(null, e.target.value, fieldIndex)}
                                     />
                                 </a>
                                 <Tooltip
-                                    id={`candidate${index}-additional${index2}-field-value-tooltip`}
+                                    id={`candidate${index}-additional${fieldIndex}-field-value-tooltip`}
                                     place='bottom'
                                     effect='solid'
-                                    hidden={additionalFields[index2]?.value !== ""}
+                                    hidden={additionalFields[fieldIndex]?.value !== ""}
                                 />
                             </div>
                         </div>

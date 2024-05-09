@@ -11,7 +11,7 @@ const CandidateSchema = new Schema({
     },
     image: {
         type: String,
-        required: [true, "Candidate image is required!"],
+        default: ""
     },
     additionalFields: {
         type: [

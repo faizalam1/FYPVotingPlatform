@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Tooltip } from "react-tooltip";
 
 
@@ -67,6 +68,7 @@ const EditCampaign = ({ campaignID }) => {
     }
 
     const handleSubmit = async (e) => {
+        e.preventDefault();
         const campaignStartDateTime = new Date(campaignStart);
         const campaignEndDateTime = new Date(campaignEnd);
         if (!nameRegex.test(campaignName)) {
@@ -289,6 +291,11 @@ const EditCampaign = ({ campaignID }) => {
                         />
                     </div>
                 )}
+                <Link className="flex justify-center items-center" href={`/portal/campaigns/edit/candidates/${campaignID}`}>
+                    <p className="bg-green-500 text-white rounded-lg p-2">
+                        Edit Candidates
+                    </p>
+                </Link>
 
                 <button
                     className="bg-blue-500 text-white rounded-lg p-2"
@@ -297,7 +304,7 @@ const EditCampaign = ({ campaignID }) => {
                     Edit Campaign
                 </button>
             </form>
-
+                
         </section>
     )
 }

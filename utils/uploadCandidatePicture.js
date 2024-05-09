@@ -16,9 +16,6 @@ const uploadCandidatePicture = async (picture, picturePath) => {
   const containerClient = blobServiceClient.getContainerClient(containerName);
   let filePath = `${picturePath}/${picture.name}`;
   const blockBlobClient = containerClient.getBlockBlobClient(filePath);
-  if (await blockBlobClient.exists()) {
-    throw new Error("File already exists");
-  }
   try {
     await blockBlobClient.uploadData(await picture.arrayBuffer() , {
       blobHTTPHeaders: {

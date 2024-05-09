@@ -22,7 +22,7 @@ export async function GET(req) {
   
   const campaigns = await Campaign.find({ createdBy: user.id, isDeleted: false });
   if (campaigns.length === 0) {
-    return NextResponse.json([], { status: 204 });
+    return NextResponse.json([], { status: 200 });
   }
   return NextResponse.json(campaigns);
 }

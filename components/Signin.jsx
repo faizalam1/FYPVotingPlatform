@@ -1,7 +1,7 @@
 'use client';
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Tooltip } from "react-tooltip";
 
 
@@ -12,6 +12,9 @@ const Signin = () => {
   const emailRegex = new RegExp(/^[\w\.\\+]+@([\w-]+\.)+[\w-]{2,}$/);
 
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const callbackURL = searchParams.get("callbackUrl");
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
@@ -63,6 +66,11 @@ const Signin = () => {
     });
     console.log(response);
     if (response.status == 200) {
+      if (callbackURL) {
+        router.push(callbackURL);
+        router.refresh();
+        return;
+      }
       router.push("/portal");
       router.refresh();
     }

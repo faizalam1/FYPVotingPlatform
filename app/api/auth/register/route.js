@@ -3,9 +3,10 @@ import { connectToDatabase } from "@/utils/database";
 import { NextResponse } from "next/server";
 import { sendVerificationCode } from "@/utils/sendVerificationCode";
 
+
 export async function POST(req) {
   const body = await req.json();
-  const { email, password, firstName, lastName, username } = body;
+  const { email, password, firstName, lastName, username, secret } = body;
 
   const emailRegex = new RegExp(/^[\w\\.\\+]+@([\w-]+\.)+[\w-]{2,}$/);
   const passwordRegex = new RegExp(
@@ -13,6 +14,7 @@ export async function POST(req) {
   );
   const nameRegex = new RegExp(/^[a-zA-Z ]+$/);
   const usernameRegex = new RegExp(/^[a-zA-Z][a-zA-Z0-9_]*$/);
+  const secretRegex = new RegExp(/^[a-zA-Z0-9_]{8,}$/);
 
   if (!usernameRegex.test(username)) {
     return NextResponse.json(
@@ -31,6 +33,15 @@ export async function POST(req) {
       {
         error:
           "Password invalid, it should contain at least 1 lowercase letter, 1 uppercase letter, 1 number, 1 special character and be atleast 8 characters long!",
+      },
+      { status: 400 }
+    );
+  }
+  if (!secretRegex.test(secret)) {
+    return NextResponse.json(
+      {
+        error:
+          "Secret invalid, it should contain only letters, numbers and underscores and be atleast 8 characters long!",
       },
       { status: 400 }
     );
@@ -73,7 +84,10 @@ export async function POST(req) {
     );
   }
 
-  const user = await User.create({ email, password, firstName, lastName, username });
+  let hashedPassword = await bcrypt.hash(password, 10);
+  let hashedSecret = await bcrypt.hash(secret, 10);
+
+  const user = await User.create({ email, hashedPassword, hashedSecret, firstName, lastName, username });
   console.log(user);
   if (!user) {
     return NextResponse.json(

@@ -11,11 +11,13 @@ const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+  const [secret, setSecret] = useState("");
 
   const nameRegex = new RegExp(/^[a-zA-Z ]+$/);
   const emailRegex = new RegExp(/^[\w\\.\\+]+@([\w-]+\.)+[\w-]{2,}$/);
   const passwordRegex = new RegExp(/^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/);
   const usernameRegex = new RegExp(/^[a-zA-Z][a-zA-Z0-9_]*$/);
+  const secretRegex = new RegExp(/^[a-zA-Z0-9_]{8,}$/);
 
   const router = useRouter();
 
@@ -31,7 +33,8 @@ const Signup = () => {
         password: password,
         firstName: firstName,
         lastName: lastName,
-        username: username
+        username: username,
+        secret: secret
       }),
     });
     console.log(response)
@@ -45,10 +48,14 @@ const Signup = () => {
       router.refresh();
     }
     else if(response.status == 409){
-      alert("Email already exists!");
+      if (response.error == "Username already exists!")
+        alert("Username already exists!");
+      else if (response.error == "Email already exists!")
+        alert("Email already exists!");
     }
     else if(response.status == 400){
       alert("Invalid input!");
+      alert(response.error)
     }
     else {
       alert("Sign Up Failed!")
@@ -159,6 +166,35 @@ const Signup = () => {
           />
         </div>
         <div>
+          <label htmlFor="secret">Secret For Vote Anonymity</label>
+          <a
+            data-tooltip-id="secretError"
+            data-tooltip-variant="error"
+            data-tooltip-content="Please enter a valid secret. It should contain only letters, numbers and underscores and be at least 8 character long!"
+          >
+            <input
+              type="text"
+              name="secret"
+              placeholder="Secret"
+              value={secret}
+              onChange={(e) => setSecret(e.target.value)}
+              required
+              className="p-2 border rounded-lg border-gray-300 w-full"
+            />
+          </a>
+          <Tooltip
+            id="secretError"
+            place="bottom"
+            effect="solid"
+            hidden={!secret || secretRegex.test(secret)}
+          />
+          <p
+            className="text-sm text-gray-500"  
+          >
+            Please remember this, as it will be used to verify your vote.
+          </p>
+        </div>
+        <div>
           <label htmlFor="password">Password</label>
           <a
             data-tooltip-id="passwordError"
@@ -215,6 +251,7 @@ const Signup = () => {
             !emailRegex.test(email) ||
             !usernameRegex.test(username) ||
             passwordRegex.test(password) ||
+            !secretRegex.test(secret) ||
             password != password2} 
             className="p-2 bg-green-500 rounded-xl text-white hover:bg-green-700 font-medium w-full">
           Sign Up

@@ -20,10 +20,10 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: [true, "Password is required!"],
-    match: [
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
-      "Password invalid, it should contain at least 1 lowercase letter, 1 uppercase letter, 1 number, 1 special character and be atleast 8 characters long!",
-    ],
+  },
+  secret: {
+    type: String,
+    required: [true, "Secret is required!"],
   },
   firstName: {
     type: String,
@@ -63,13 +63,6 @@ const UserSchema = new Schema({
   }
   }
 );
-
-UserSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
-  next();
-});
 
 export const User = models.User || model("User", UserSchema);
 export default User;

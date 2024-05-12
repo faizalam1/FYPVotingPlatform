@@ -97,7 +97,7 @@ const EditCampaign = ({ campaignID }) => {
         }
 
         const response = await fetch("/api/portal/campaigns/editCampaign", {
-            method: "PATCH",
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },

@@ -4,7 +4,7 @@ import { connectToDatabase } from "@/utils/database";
 import Campaign from "@/models/campaign";
 import { NextResponse } from "next/server";
 
-export async function PATCH(req) {
+export async function PUT(req) {
     const session = await getServerSession(authOptions);
     if (!session) {
         return NextResponse.json({ error: "Unauthorized!" }, { status: 401 });

@@ -122,7 +122,7 @@ const EditCandidates = ({ campaignID }) => {
             async function updateCandidateInDB(formData, candidate) {
                 formData.append("id", candidate._id)
                 const res = await fetch('/api/portal/campaigns/candidates/editCandidate', {
-                    method: 'PATCH',
+                    method: 'PUT',
                     body: formData
                 })
                 if (res.status === 200) {

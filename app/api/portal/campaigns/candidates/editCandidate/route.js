@@ -6,7 +6,7 @@ import Candidate from "@/models/candidate";
 import uploadCandidatePicture from "@/utils/uploadCandidatePicture";
 import { NextResponse } from "next/server";
 
-export async function PATCH(req) {
+export async function PUT(req) {
     const session = await getServerSession(authOptions);
     if (!session) {
         return NextResponse.json({ error: "Unauthorized!" }, { status: 401 });

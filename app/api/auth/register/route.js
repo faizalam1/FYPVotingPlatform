@@ -2,6 +2,7 @@ import User from "@/models/user";
 import { connectToDatabase } from "@/utils/database";
 import { NextResponse } from "next/server";
 import { sendVerificationCode } from "@/utils/sendVerificationCode";
+import bcrypt from "bcrypt";
 
 
 export async function POST(req) {

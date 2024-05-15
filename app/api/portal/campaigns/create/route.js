@@ -142,7 +142,7 @@ export async function POST(req) {
     startDateTime: new Date(campaign.campaignStart),
     endDateTime: new Date(campaign.campaignEnd),
     isRestrictedByEmail: campaign.isRestrictedByEmail,
-    restrictedDomains: campaign.domains,
+    allowedDomains: campaign.domains,
     numberOfCandidates: campaign.numberOfCandidates,
     createdBy: user.id,
   });

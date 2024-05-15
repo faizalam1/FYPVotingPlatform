@@ -11,7 +11,7 @@ export async function PUT(req) {
     }
     const user = session.user;
     const body = await req.json();
-    const { campaignID, name, description, votingType, startDateTime, endDateTime, isRestrictedByEmail, restrictedDomains } = body;
+    const { campaignID, name, description, votingType, startDateTime, endDateTime, isRestrictedByEmail, allowedDomains } = body;
     
     const nameRegex = new RegExp(/^[a-zA-Z0-9 ]+$/);
     const votingTypeRegex = new RegExp(/^(Default|Ranked)$/);
@@ -28,7 +28,7 @@ export async function PUT(req) {
         !datetimeISORegex.test(startDateTime) ||
         !datetimeISORegex.test(endDateTime) ||
         !votingTypeRegex.test(votingType) ||
-        (isRestrictedByEmail && restrictedDomains.length === 0 && !domainsRegex.test(restrictedDomains.join(", ")))
+        (isRestrictedByEmail && allowedDomains.length === 0 && !domainsRegex.test(allowedDomains.join(", ")))
     ){
         return NextResponse.json({ error: "Invalid Campaign Data!" }, { status: 400 });
     }
@@ -49,7 +49,7 @@ export async function PUT(req) {
     campaign.startDateTime = new Date(startDateTime);
     campaign.endDateTime = new Date(endDateTime);
     campaign.isRestrictedByEmail = isRestrictedByEmail;
-    campaign.restrictedDomains = restrictedDomains;
+    campaign.allowedDomains = allowedDomains;
     await campaign.save();
     return NextResponse.json(campaign);
 }

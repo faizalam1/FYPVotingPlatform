@@ -30,7 +30,7 @@ const CampaignSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    restrictedDomains: {
+    allowedDomains: {
         type: [String],
         default: [],
     },

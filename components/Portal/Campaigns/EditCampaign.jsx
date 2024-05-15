@@ -33,7 +33,7 @@ const EditCampaign = ({ campaignID }) => {
                 setCampaignStart(data.startDateTime);
                 setCampaignEnd(data.endDateTime);
                 setIsRestrictedByEmail(data.isRestrictedByEmail);
-                setDomains(data.restrictedDomains);
+                setDomains(data.allowedDomains);
             }
             else if (response.status == 401) {
                 alert("Unauthorized");
@@ -109,7 +109,7 @@ const EditCampaign = ({ campaignID }) => {
                 startDateTime: campaignStart,
                 endDateTime: campaignEnd,
                 isRestrictedByEmail: isRestrictedByEmail,
-                restrictedDomains: domains
+                allowedDomains: domains
             })
         });
         if (response.status == 200) {

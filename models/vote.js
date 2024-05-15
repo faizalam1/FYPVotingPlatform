@@ -15,7 +15,7 @@ const VoteSchema = new Schema({
     enum: ["Default", "Ranked"],
     required: [true, "Vote type is required!"],
   },
-  Vote: [
+  vote: [
     {
       candidateID: {
         type: Schema.Types.ObjectId,
@@ -35,3 +35,6 @@ const VoteSchema = new Schema({
     default: Date.now,
   },
 });
+
+const Vote = models.Vote || model("Vote", VoteSchema);
+export default Vote;

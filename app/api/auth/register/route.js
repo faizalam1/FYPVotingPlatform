@@ -85,10 +85,10 @@ export async function POST(req) {
     );
   }
 
-  let hashedPassword = await bcrypt.hash(password, 10);
-  let hashedSecret = await bcrypt.hash(secret, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedSecret = await bcrypt.hash(secret, 10);
 
-  const user = await User.create({ email, hashedPassword, hashedSecret, firstName, lastName, username });
+  const user = await User.create({ email:email, password: hashedPassword, secret:hashedSecret, firstName:firstName, lastName:lastName, username:username });
   console.log(user);
   if (!user) {
     return NextResponse.json(

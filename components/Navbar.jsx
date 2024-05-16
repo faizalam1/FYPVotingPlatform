@@ -24,25 +24,15 @@ const Navbar = () => {
             Contact Us
           </div>
         </Link>
-      </div>
-      <ul className="flex flex-row space-x-6">
         <Link
           href="/app/auth"
           className="tracking-[0.8px] leading-6 uppercase inline-block"
         >
-          <li className="hover:underline bg-white flex flex-row items-center justify-center cursor-pointer p-3 rounded-xl shadow-[0px_4px_6px_-4px_rgba(0,0,0,0.1),0px_10px_15px_-3px_rgba(0,0,0,0.1),0px_0px_0px_#000,0px_0px_0px_#000] box-border border-[0.5px] border-solid border-[#222]">
+          <div className="hover:underline bg-white flex flex-row items-center justify-center cursor-pointer p-3 rounded-xl shadow-[0px_4px_6px_-4px_rgba(0,0,0,0.1),0px_10px_15px_-3px_rgba(0,0,0,0.1),0px_0px_0px_#000,0px_0px_0px_#000] box-border border-[0.5px] border-solid border-[#222]">
             Registration / Login
-          </li>
+          </div>
         </Link>
-        <Link
-          href="/app/access-campaign"
-          className="tracking-[0.8px] leading-6 uppercase inline-block"
-        >
-          <li className="hover:underline bg-indigo-600 flex flex-row items-center justify-center cursor-pointer p-3 rounded-xl shadow-[0px_4px_6px_-4px_rgba(0,0,0,0.1),0px_10px_15px_-3px_rgba(0,0,0,0.1),0px_0px_0px_#000,0px_0px_0px_#000] box-border text-white border-[0.5px] border-solid border-[#222]">
-            Access Campaign
-          </li>
-        </Link>
-      </ul>
+      </div>
     </nav>
   );
 };

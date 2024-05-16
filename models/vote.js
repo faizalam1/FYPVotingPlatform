@@ -4,9 +4,9 @@ const VoteSchema = new Schema({
   campaignID: {
     type: Schema.Types.ObjectId,
     ref: "Campaign",
-    required: [true, "Vote campaign is required!"],
+    required: [true, "Vote campaign ID is required!"],
   },
-  VoterID: {
+  voterID: {
     type: String,
     required: [true, "Voter ID is required!"],
   },
@@ -35,6 +35,8 @@ const VoteSchema = new Schema({
     default: Date.now,
   },
 });
+
+VoteSchema.index({ campaignID: 1, voterID: 1 }, { unique: true });
 
 const Vote = models.Vote || model("Vote", VoteSchema);
 export default Vote;

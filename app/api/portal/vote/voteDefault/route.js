@@ -28,7 +28,6 @@ export async function POST(req) {
     const { campaignID, candidateID, secret } = body;
     const user = await User.findOne({ email: session.user.email });
     const secretMatch = await bcrypt.compare(secret, user.secret);
-
     if (!secretMatch) {
         return NextResponse.json(
             { error: "Invalid secret!" },
@@ -96,7 +95,8 @@ export async function POST(req) {
         voterID: hashedVoterID,
         campaignID,
         vote: [{
-            candidateID: 1,
+            candidateID: candidateID,
+            rank: 1
         }]
     });
     if (!vote) {

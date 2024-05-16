@@ -117,7 +117,8 @@ const Vote = ({ campaignID }) => {
                 router.refresh()
             }
             else{
-                alert(res.status + "\n" + res.error)
+                const data = await res.json()
+                alert(res.status + "\n" + data.error)
             }
         }
         else if (campaign.votingType == "Ranked"){
@@ -125,16 +126,18 @@ const Vote = ({ campaignID }) => {
             let rankArray = []
             candidates.forEach((candidate) => {
                 Object.keys(vote).forEach((key) => {
-                    if (rankArray.includes(vote[key])){
-                        alert("Duplicate Rank!")
-                        return
-                    }
                     rankArray.push(vote[key])
                     if (key == candidate.name){
                         voteArray.push({ candidateID: candidate.id, rank: vote[key]})
                     }
                 })
             })
+            for (let i = 1; i <= candidates.length; i++){
+                if (!rankArray.includes(i)){
+                    alert("Rank " + i + " is missing!")
+                    return
+                }
+            }
             const res = await fetch(`/api/portal/vote/voteRanked`, {
                 method: "POST",
                 headers: {
@@ -152,7 +155,8 @@ const Vote = ({ campaignID }) => {
                 router.refresh()
             }
             else{
-                alert(res.status + "\n" + res.error)
+                const data = await res.json()
+                alert(res.status + "\n" + data.error)
             }
         }
     }
@@ -203,7 +207,7 @@ const Vote = ({ campaignID }) => {
                     Date.now() >= campaign?.startDateTime &&
                     Date.now() <= campaign?.endDateTime &&
                     <div
-                        className="flex flex-col items-center space-y-4 w-full"
+                        className="flex flex-col items-center space-y-4 w-3/4"
                     >
                         <p
                             className="text-center text-green-500"
@@ -236,10 +240,10 @@ const Vote = ({ campaignID }) => {
                                         className=""
                                     >{candidate.description}</p>
                                     <div
-                                        className="flex justify-center"
+                                        className="flex"
                                         >
                                     <Image
-                                        src={candidate.imagebase6 ? candidate.imagebase64: "/assets/icons/loading.svg"}
+                                        src={candidateImages[candidate.image] ? candidateImages[candidate.image]: "/assets/icons/loading.svg"}
                                         alt={candidate.name}
                                         width={64}
                                         height={64}
@@ -321,6 +325,7 @@ const Vote = ({ campaignID }) => {
                                     min="1"
                                     max={candidates.length}
                                     value={vote ? vote[candidate.name] ? vote[candidate.name]: index + 1 : index + 1}
+                                    disabled={ vote? vote[candidate.name] ? false: true : true }
                                     onChange={(e) => {
                                         setVote((prev) => {
                                             return {

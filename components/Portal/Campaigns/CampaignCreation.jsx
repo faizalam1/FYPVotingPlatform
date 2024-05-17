@@ -7,6 +7,7 @@ const CampaignCreation = () => {
     const [campaignName, setCampaignName] = useState('');
     const [campaignDescription, setCampaignDescription] = useState('');
     const [votingType, setVotingType] = useState('Default');
+    const [viewResults, setViewResults] = useState('PostVoting');
     const [campaignStart, setCampaignStart] = useState('');
     const [campaignEnd, setCampaignEnd] = useState('');
     const [isRestrictedByEmail, setIsRestrictedByEmail] = useState(false);
@@ -95,6 +96,7 @@ const CampaignCreation = () => {
 
     const nameRegex = new RegExp(/^[a-zA-Z0-9 ]+$/);
     const votingTypeRegex = new RegExp(/^(Default|Ranked)$/);
+    const viewResultsRegex = new RegExp(/^(PostVoting|Live)$/);
     const datetimeISORegex = new RegExp(/^(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))$/);
     const domainsRegex = new RegExp(/^([a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(, )?)+$/);
     const candidateNameRegex = /^[a-zA-Z]([a-zA-Z0-9\-_ ]*[a-zA-Z0-9])?$/;
@@ -115,6 +117,10 @@ const CampaignCreation = () => {
         }
         if (votingTypeRegex.test(votingType) === false) {
             alert("Invalid Voting Type");
+            return;
+        }
+        if (viewResultsRegex.test(viewResults) === false) {
+            alert("Invalid View Results Type");
             return;
         }
         if (campaignStart === '' || campaignEnd === '') {
@@ -172,11 +178,11 @@ const CampaignCreation = () => {
             return;
         }
 
-
         const formData = new FormData();
         formData.append('campaignName', campaignName);
         formData.append('campaignDescription', campaignDescription);
         formData.append('votingType', votingType);
+        formData.append('viewResults', viewResults);
         formData.append('campaignStart', campaignStart);
         formData.append('campaignEnd', campaignEnd);
         formData.append('isRestrictedByEmail', isRestrictedByEmail);
@@ -194,38 +200,6 @@ const CampaignCreation = () => {
             });
         });
 
-        console.log(
-            {
-                campaignName: formData.get('campaignName'),
-                campaignDescription: formData.get('campaignDescription'),
-                votingType: formData.get('votingType'),
-                campaignStart: formData.get('campaignStart'),
-                campaignEnd: formData.get('campaignEnd'),
-                isRestrictedByEmail: formData.get('isRestrictedByEmail'),
-                domains: formData.get('domains'),
-                numberOfCandidates: formData.get('numberOfCandidates'),
-                areAdditionalFieldsRequired: formData.get('areAdditionalFieldsRequired'),
-                numberOfAdditionalFields: formData.get('numberOfAdditionalFields'),
-            });
-        let candidatesCheck = [];
-        for (let i = 0; i < parseInt(formData.get('numberOfCandidates')); i++) {
-            let candidate = {
-                name: formData.get(`candidate${i}-name`),
-                description: formData.get(`candidate${i}-description`),
-                image: formData.get(`candidate${i}-image`),
-                additionalFields: []
-            };
-            for (let j = 0; j < parseInt(formData.get('numberOfAdditionalFields')); j++) {
-                candidate.additionalFields.push({
-                    name: formData.get(`candidate${i}-additionalField${j}-name`),
-                    value: formData.get(`candidate${i}-additionalField${j}-value`)
-                });
-            }
-            candidatesCheck.push(candidate);
-        }
-        console.log(candidatesCheck);
-
-
         const res = await fetch('/api/portal/campaigns/create', {
             method: 'POST',
             body: formData
@@ -233,6 +207,8 @@ const CampaignCreation = () => {
 
         if (res.status == 201)
             alert("Campaign Created Successfully");
+        else
+            alert(res.status + "\n" + (await res.json()).error)
     }
 
     return (
@@ -306,6 +282,30 @@ const CampaignCreation = () => {
                         place="bottom"
                         effect="solid"
                         hidden={votingTypeRegex.test(votingType)}
+                    />
+                </div>
+                <div className="flex flex-col">
+                    <label className="text-sm font-semibold">View Results</label>
+                    <a
+                        data-tooltip-id="ViewResultsError"
+                        data-tooltip-variant="error"
+                        data-tooltip-content="Please enter a valid view results type. It should be either PostVoting or Live."
+                    >
+                        <select
+                            className="p-2 border rounded-lg border-gray-300 w-full"
+                            value={viewResults}
+                            onChange={(e) => setViewResults(e.target.value)}
+                            required
+                        >
+                            <option value="PostVoting">PostVoting</option>
+                            <option value="Live">Live</option>
+                        </select>
+                    </a>
+                    <Tooltip
+                        id="ViewResultsError"
+                        place="bottom"
+                        effect="solid"
+                        hidden={viewResultsRegex.test(viewResults)}
                     />
                 </div>
                 <div className="flex flex-col">

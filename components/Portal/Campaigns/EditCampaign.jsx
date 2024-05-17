@@ -10,6 +10,7 @@ const EditCampaign = ({ campaignID }) => {
     const [campaignName, setCampaignName] = useState("");
     const [campaignDescription, setCampaignDescription] = useState("");
     const [votingType, setVotingType] = useState("Default");
+    const [viewResults, setViewResults] = useState("PostVoting");
     const [campaignStart, setCampaignStart] = useState("");
     const [campaignEnd, setCampaignEnd] = useState("");
     const [isRestrictedByEmail, setIsRestrictedByEmail] = useState(false);
@@ -19,6 +20,7 @@ const EditCampaign = ({ campaignID }) => {
 
     const nameRegex = new RegExp(/^[a-zA-Z0-9 ]+$/);
     const votingTypeRegex = new RegExp(/^(Default|Ranked)$/);
+    const viewResultsRegex = new RegExp(/^(PostVoting|Live)$/);
     const datetimeISORegex = new RegExp(/^(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))$/);
     const domainsRegex = new RegExp(/^([a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(, )?)+$/);
     
@@ -30,6 +32,7 @@ const EditCampaign = ({ campaignID }) => {
                 setCampaignName(data.name);
                 setCampaignDescription(data.description);
                 setVotingType(data.votingType);
+                setViewResults(data.viewResults);
                 setCampaignStart(data.startDateTime);
                 setCampaignEnd(data.endDateTime);
                 setIsRestrictedByEmail(data.isRestrictedByEmail);
@@ -83,6 +86,10 @@ const EditCampaign = ({ campaignID }) => {
             alert("Please enter a valid voting type. It should be either Default or Ranked.");
             return;
         }
+        if (!viewResultsRegex.test(viewResults)) {
+            alert("Please enter a valid view results. It should be either PostVoting or Live.");
+            return;
+        }
         if (!datetimeISORegex.test(campaignStart)) {
             alert("Please enter a valid start datetime like 2024-04-24T20:50.");
             return;
@@ -106,6 +113,7 @@ const EditCampaign = ({ campaignID }) => {
                 name: campaignName,
                 description: campaignDescription,
                 votingType: votingType,
+                viewResults: viewResults,
                 startDateTime: campaignStart,
                 endDateTime: campaignEnd,
                 isRestrictedByEmail: isRestrictedByEmail,
@@ -207,6 +215,30 @@ const EditCampaign = ({ campaignID }) => {
                         place="bottom"
                         effect="solid"
                         hidden={votingTypeRegex.test(votingType)}
+                    />
+                </div>
+                <div className="flex flex-col">
+                    <label className="text-sm font-semibold">View Results</label>
+                    <a
+                        data-tooltip-id="ViewResultsError"
+                        data-tooltip-variant="error"
+                        data-tooltip-content="Please enter a valid view results. It should be either PostVoting or Live."
+                    >
+                        <select
+                            className="p-2 border rounded-lg border-gray-300 w-full"
+                            value={viewResults}
+                            onChange={(e) => setViewResults(e.target.value)}
+                            required
+                        >
+                            <option value="PostVoting">PostVoting</option>
+                            <option value="Live">Live</option>
+                        </select>
+                    </a>
+                    <Tooltip
+                        id="ViewResultsError"
+                        place="bottom"
+                        effect="solid"
+                        hidden={viewResultsRegex.test(viewResults)}
                     />
                 </div>
                 <div className="flex flex-col">

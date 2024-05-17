@@ -34,6 +34,15 @@ const CampaignSchema = new Schema({
         type: [String],
         default: [],
     },
+    viewResults: {
+        type: String,
+        enum: ["PostVoting", "Live"],
+        required: [true, "Campaign view results is required!"],
+    },
+    isResultsPublic: {
+        type: Boolean,
+        default: false,
+    },
     createdAt: {
         type: Date,
         default: Date.now,

@@ -11,10 +11,11 @@ export async function PUT(req) {
     }
     const user = session.user;
     const body = await req.json();
-    const { campaignID, name, description, votingType, startDateTime, endDateTime, isRestrictedByEmail, allowedDomains } = body;
+    const { campaignID, name, description, votingType, viewResults, startDateTime, endDateTime, isRestrictedByEmail, allowedDomains } = body;
     
     const nameRegex = new RegExp(/^[a-zA-Z0-9 ]+$/);
     const votingTypeRegex = new RegExp(/^(Default|Ranked)$/);
+    const viewResultsRegex = new RegExp(/^(PostVoting|Live)$/);
     const datetimeISORegex = new RegExp(/^(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))$/);
     const domainsRegex = new RegExp(/^([a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(, )?)+$/);
 
@@ -28,6 +29,7 @@ export async function PUT(req) {
         !datetimeISORegex.test(startDateTime) ||
         !datetimeISORegex.test(endDateTime) ||
         !votingTypeRegex.test(votingType) ||
+        !viewResultsRegex.test(viewResults) ||
         (isRestrictedByEmail && allowedDomains.length === 0 && !domainsRegex.test(allowedDomains.join(", ")))
     ){
         return NextResponse.json({ error: "Invalid Campaign Data!" }, { status: 400 });
@@ -46,6 +48,7 @@ export async function PUT(req) {
     campaign.name = name;
     campaign.description = description;
     campaign.votingType = votingType;
+    campaign.viewResults = viewResults;
     campaign.startDateTime = new Date(startDateTime);
     campaign.endDateTime = new Date(endDateTime);
     campaign.isRestrictedByEmail = isRestrictedByEmail;

@@ -20,6 +20,7 @@ export async function POST(req) {
     campaign["campaignName"] = formdata.get("campaignName");
     campaign["campaignDescription"] = formdata.get("campaignDescription");
     campaign["votingType"] = formdata.get("votingType");
+    campaign["viewResults"] = formdata.get("viewResults");
     campaign["campaignStart"] = formdata.get("campaignStart");
     campaign["campaignEnd"] = formdata.get("campaignEnd");
     campaign["isRestrictedByEmail"] =
@@ -64,6 +65,7 @@ export async function POST(req) {
 
   const campaignNameRegex = new RegExp(/^[a-zA-Z0-9 ]+$/);
   const votingTypeRegex = new RegExp(/^(Default|Ranked)$/);
+  const viewResultsRegex = new RegExp(/^(PostVoting|Live)$/);
   const datetimeISORegex = new RegExp(
     /^(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))$/
   );
@@ -76,6 +78,7 @@ export async function POST(req) {
       campaign.campaignDescription.length >= 10 &&
       campaign.campaignDescription.length < 500 &&
       votingTypeRegex.test(campaign.votingType) &&
+      viewResultsRegex.test(campaign.viewResults) &&
       datetimeISORegex.test(campaign.campaignStart) &&
       datetimeISORegex.test(campaign.campaignEnd) &&
       new Date(campaign.campaignEnd) > new Date() &&
@@ -103,7 +106,7 @@ export async function POST(req) {
       ) &&
       campaign.candidates.every(
         (candidate) =>
-          candidate.image == null ||
+          candidate.image == "null" ||
           (candidate.image instanceof File &&
             candidate.image.name.split(".")[1].match(/(jpg|jpeg|png)/) &&
             candidate.image.size <= 1024 * 1024 * 2 &&
@@ -111,6 +114,10 @@ export async function POST(req) {
       )
     )
   ) {
+    campaign.candidates.forEach((candidate) => {
+      console.log(candidate);
+    }
+    );
     return NextResponse.json(
       { error: "Invalid Campaign Data!" },
       { status: 400 }
@@ -139,6 +146,7 @@ export async function POST(req) {
     name: campaign.campaignName,
     description: campaign.campaignDescription,
     votingType: campaign.votingType,
+    viewResults: campaign.viewResults,
     startDateTime: new Date(campaign.campaignStart),
     endDateTime: new Date(campaign.campaignEnd),
     isRestrictedByEmail: campaign.isRestrictedByEmail,
@@ -163,7 +171,7 @@ export async function POST(req) {
       );
     }
     let image = "";
-    if (candidate.image) 
+    if (candidate.image != "null") 
       image = await uploadCandidatePicture(candidate.image, `${user.username}/${campaignRecord.name}`);
     const candidateRecord = await Candidate.create({
       name: candidate.name,

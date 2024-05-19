@@ -69,7 +69,7 @@ const UserCampaigns = () => {
           <p className="w-1/6">VOTING TYPE</p>
           <p className="w-1/6">START DATE</p>
           <p className="w-1/6">END DATE</p>
-          <p className="w-1/6"></p>
+          <p className="w-1/5"></p>
         </div>
 
         {campaigns.map(campaign => (
@@ -93,8 +93,16 @@ const UserCampaigns = () => {
             <p className="w-1/6">{campaign.votingType}</p>
             <p className="w-1/6">{new Date(campaign.startDateTime).toLocaleDateString()}</p>
             <p className="w-1/6">{new Date(campaign.endDateTime).toLocaleDateString()}</p>
-            <span className="w-1/6 flex justify-between">
-              <button className="text-[#2563EB]" onClick={() => {
+            <span className="w-1/5 flex justify-between">
+              <button
+                className="text-[#2563EB]"
+                onClick={() => {
+                  navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_URL}/portal/vote/${campaign._id}`);
+                }}
+              >
+                Copy Voting Link
+              </button>
+              <button className="text-[#2563EB] ml-4" onClick={() => {
                 router.push(`/portal/campaigns/edit/${campaign._id}`);
                 router.refresh();
               }}>Edit</button>

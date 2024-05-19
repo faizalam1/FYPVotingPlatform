@@ -126,7 +126,7 @@ const UserCampaigns = () => {
                 router.refresh()
               }}>Delete</button>
               <button className="text-[#FBBF24] ml-4" onClick={() => {
-                router.push(`/portal/campaigns/results/${campaign._id}`)
+                router.push(`/portal/result/${campaign._id}`)
                 router.refresh();
               }}
               >Results</button>

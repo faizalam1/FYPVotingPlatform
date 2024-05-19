@@ -12,7 +12,7 @@ const Contact = () => {
   useEffect(() => {
     if (name.length > 0 && subject.length > 0 && message.length > 0) {
       setHref(
-        `mailto:info@example.com?subject=${encodeURIComponent(
+        `mailto:info@fyp.fauzanazhar.net?subject=${encodeURIComponent(
           subject
         )}&body=${encodeURIComponent(message + "\n\nFrom\n" + name)}`
       );

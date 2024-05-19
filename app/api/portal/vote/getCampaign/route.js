@@ -51,5 +51,7 @@ export async function GET(req) {
     votingType: campaign.votingType,
     startDateTime: campaign.startDateTime,
     endDateTime: campaign.endDateTime,
+    isResultsPublic: campaign.isResultsPublic,
+    viewResults: campaign.viewResults,
   });
 }

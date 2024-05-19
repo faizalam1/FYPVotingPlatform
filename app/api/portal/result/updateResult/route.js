@@ -11,7 +11,8 @@ const calculateDefaultResult = (candidates, votes) => {
   const result = [[]];
   candidates.forEach((candidate) => {
     result[0].push({
-      candidateID: candidate.id,
+      candidateID: candidate._id,
+      name: candidate.name,
       votes: 0,
     });
   });
@@ -29,30 +30,32 @@ const calculateDefaultResult = (candidates, votes) => {
 const calculateRankedResult = (candidatesInput, votesInput) => {
   const results = [];
   let candidates = [...candidatesInput];
-  let votes = votesInput.map((vote) => { [...vote.vote] });
+  let votes = votesInput.map((vote) => [...vote.vote]);
+  console.log(votes)
   let round = 0;
 
   while (candidates.length > 0) {
     const roundResult = candidates.map((candidate) => (
       {
-        candidateID: candidate.id,
+        candidateID: candidate._id,
+        name: candidate.name,
         votes: 0,
       }
     ));
 
     votes.forEach((vote) => {
-      const topCandidate = vote.vote.sort(
+      const topCandidate = vote.sort(
         (a, b) => a.rank - b.rank
       )[0];
       const candidateResult = roundResult.find(
         candidate =>
-          candidate.candidateID === topCandidate.candidateID
+          candidate.candidateID.toString() === topCandidate.candidateID.toString()
       );
+      console.log(candidateResult)
       if (candidateResult) {
         candidateResult.votes += 1;
       }
     });
-
     results[round] = roundResult;
 
     const minVotes = Math.min(
@@ -71,7 +74,7 @@ const calculateRankedResult = (candidatesInput, votesInput) => {
     );
 
     votes = votes.map((vote) => (
-      vote.vote.filter(
+      vote.filter(
         (candidate) =>
           !eliminatedCandidates.find(
             (eliminatedCandidate) =>
@@ -110,7 +113,7 @@ export async function PUT(req) {
 
   try {
     await connectToDatabase();
-
+    let votes;
     const campaign = await Campaign.findOne({
       _id: campaignID,
       createdBy: user.id,
@@ -135,7 +138,7 @@ export async function PUT(req) {
       !result ||
       new Date(result?.countedAt) < new Date(campaign.endDateTime)
     ) {
-      const votes = await Vote.find({ campaignID });
+      votes = await Vote.find({ campaignID });
       let newResult;
       if (campaign.votingType === "Default") {
         newResult = calculateDefaultResult(candidates, votes);
@@ -144,19 +147,28 @@ export async function PUT(req) {
       }
       if (result) {
         result.result = newResult;
+        result.totalVotes = votes.length;
         result.countedAt = new Date();
         await result.save();
       } else {
         await Result.create({
           campaignID,
           type: campaign.votingType,
+          totalVotes: votes.length,
           result: newResult,
         });
       }
     }
+    else {
+      return NextResponse.json(
+        { error: "Result already calculated!" },
+        { status: 400 }
+      );
+    }
 
     return NextResponse.json({ campaign, candidates, result, votes });
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

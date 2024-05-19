@@ -254,6 +254,9 @@ const Result = ({ campaignID }) => {
                                 })
                             }
                             </div>
+                            <div className="flex flex-grow-0 justify-between p-4 rounded-xl text-sm font-thin">
+                                Round {round+1} of {result?.result?.length}
+                            </div>
                         </div>
                         <div className="flex justify-center items-center">
                             <button

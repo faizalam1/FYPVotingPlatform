@@ -8,19 +8,18 @@ import Vote from "@/models/vote";
 import { NextResponse } from "next/server";
 
 const calculateDefaultResult = (candidates, votes) => {
-  const result = [[]];
-  candidates.forEach((candidate) => {
-    result[0].push({
-      candidateID: candidate._id,
-      name: candidate.name,
-      votes: 0,
-    });
-  });
+  let result = [[]];
+  result[0] = candidates.map((candidate) => ({
+    candidateID: candidate._id,
+    name: candidate.name,
+    votes: 0,
+  }));
   votes.forEach((vote) => {
-    result[0].forEach((candidate) => {
-      if (candidate.candidateID == vote.vote[0].candidateID) {
+    result[0] = result[0].map((candidate) => {
+      if (vote.vote[0].candidateID.toString() === candidate.candidateID.toString()) {
         candidate.votes += 1;
       }
+      return candidate;
     });
   });
   return result;
@@ -28,14 +27,14 @@ const calculateDefaultResult = (candidates, votes) => {
 
 
 const calculateRankedResult = (candidatesInput, votesInput) => {
-  const results = [];
+  let results = [];
   let candidates = [...candidatesInput];
   let votes = votesInput.map((vote) => [...vote.vote]);
   
   let round = 0;
 
   while (candidates.length > 0) {
-    const roundResult = candidates.map((candidate) => (
+    let roundResult = candidates.map((candidate) => (
       {
         candidateID: candidate._id,
         name: candidate.name,

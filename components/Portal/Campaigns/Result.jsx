@@ -8,6 +8,7 @@ const Result = ({ campaignID }) => {
     const [result, setResult] = useState([]);
     const [isResultPublished, setIsResultPublished] = useState(false);
     const [isLive, setIsLive] = useState(false);
+    const [reupdateResult, setReupdateResult] = useState(true);
     const [refreshTime, setRefreshTime] = useState(-1);
     const [round, setRound] = useState(0);
 
@@ -39,12 +40,9 @@ const Result = ({ campaignID }) => {
                 alert("Error fetching campaign");
             }
         }
-        const fetchResult = async () => {
-            const updateResult = await fetch(`/api/portal/result/updateResult?id=${campaignID}`, {
-                method: 'PUT'
-            });
-            if (updateResult.status == 200) {
-                const response = await fetch(`/api/portal/result/getResult?id=${campaignID}`);
+
+        const getResult = async () => {
+            const response = await fetch(`/api/portal/result/getResult?id=${campaignID}`);
                 if (response.status == 200) {
                     const data = await response.json();
                     setResult(data.result);
@@ -61,6 +59,23 @@ const Result = ({ campaignID }) => {
                 else {
                     alert("Error fetching result");
                 }
+                return;
+            }
+    
+        const fetchResult = async () => {
+            if (!reupdateResult) {
+                await getResult();
+            }
+            const updateResult = await fetch(`/api/portal/result/updateResult?id=${campaignID}`, {
+                method: 'PUT'
+            });
+            if (updateResult.status == 200) {
+                await getResult();
+            }
+            else if (updateResult.status == 400) {
+                const data = await updateResult.json();
+                if (data.error == "Result already calculated!")
+                    setReupdateResult(false);
             }
             else if (updateResult.status == 403) {
                 alert("User is not allowed to view this campaign");
@@ -74,76 +89,12 @@ const Result = ({ campaignID }) => {
             else {
                 alert("Error updating result");
             }
-
+    
         }
+
         fetchCampaign();
         fetchResult();
-    }, [campaignID, refreshTime])
 
-    useEffect(() => {
-        const fetchCampaign = async () => {
-            const response = await fetch(`/api/portal/vote/getCampaign?id=${campaignID}`);
-            if (response.status == 200) {
-                const data = await response.json();
-                setIsResultPublished(data.isResultsPublic);
-                const live = data.viewResults == "Live" && new Date(data.endDateTime) > new Date();
-                setIsLive(live);
-                if (live && refreshTime == -1) {
-                    setRefreshTime(120000);
-                }
-                
-                setCampaign(data);
-            }
-            else if (response.status == 403) {
-                alert("User is not allowed to view this campaign");
-            }
-            else if (response.status == 404) {
-                alert("No campaign found");
-            }
-            else if (response.status == 401) {
-                alert("Unauthorized");
-            }
-            else {
-                alert("Error fetching campaign");
-            }
-        }
-        const fetchResult = async () => {
-            const updateResult = await fetch(`/api/portal/result/updateResult?id=${campaignID}`, {
-                method: 'PUT'
-            });
-            if (updateResult.status == 200) {
-                const response = await fetch(`/api/portal/result/getResult?id=${campaignID}`);
-                if (response.status == 200) {
-                    const data = await response.json();
-                    setResult(data.result);
-                }
-                else if (response.status == 403) {
-                    alert("User is not allowed to view this campaign");
-                }
-                else if (response.status == 404) {
-                    alert((await response.json()).error);
-                }
-                else if (response.status == 401) {
-                    alert("Unauthorized");
-                }
-                else {
-                    alert("Error fetching result");
-                }
-            }
-            else if (updateResult.status == 403) {
-                alert("User is not allowed to view this campaign");
-            }
-            else if (updateResult.status == 404) {
-                alert((await updateResult.json()).error);
-            }
-            else if (updateResult.status == 401) {
-                alert("Unauthorized");
-            }
-            else {
-                alert("Error updating result");
-            }
-
-        }
         if (refreshTime > 0) {
             const interval = setInterval(() => {
                 fetchCampaign();
@@ -151,7 +102,7 @@ const Result = ({ campaignID }) => {
             }, refreshTime);
             return () => clearInterval(interval);
         }
-    }, [refreshTime, campaignID])
+    }, [refreshTime, campaignID, reupdateResult])
 
     const publishResult = async (isPublished) => {
         const response = await fetch('/api/portal/result/editPublishResult', {
@@ -245,8 +196,10 @@ const Result = ({ campaignID }) => {
                                             className="bg-[#f3f4f6] rounded-xl"
                                         >
                                             <div 
-                                            className={`p-2 rounded-xl ${((candidate.votes)/result.totalVotes)*100 == 0 ? "bg-transparent":`overflow-hidden bg-[#${barColors[index%6]}]`} text-sm text-center`} 
-                                            style={{width: `${((candidate.votes)/result.totalVotes)*100}%`}}>
+                                            className={`p-2 rounded-xl overflow-hidden text-sm text-center`} 
+                                            style={{width: `${((candidate.votes)/result.totalVotes)*100}%`,
+                                                    backgroundColor: candidate.votes == 0 ? "transparent" : `#${barColors[index % 6]}`
+                                            }}>
                                                 {candidate.name}
                                             </div>
                                         </div>

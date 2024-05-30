@@ -21,7 +21,6 @@ export async function PUT(req) {
 
     if (
         !name ||
-        !description ||
         !votingType ||
         !startDateTime ||
         !endDateTime ||
@@ -32,6 +31,7 @@ export async function PUT(req) {
         !viewResultsRegex.test(viewResults) ||
         (isRestrictedByEmail && allowedDomains.length === 0 && !domainsRegex.test(allowedDomains.join(", ")))
     ){
+        console.log(!description)
         return NextResponse.json({ error: "Invalid Campaign Data!" }, { status: 400 });
     }
     

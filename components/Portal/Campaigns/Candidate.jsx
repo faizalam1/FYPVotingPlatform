@@ -9,6 +9,7 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
     const [imageFile, setImageFile] = useState(null)
 
     const nameRegex = /^[a-zA-Z]([a-zA-Z0-9\-_ ]*[a-zA-Z0-9])?$/
+    const valueRegex = /^[a-zA-Z0-9\-_ ]+$/
 
     useEffect(() => {
         setAdditionalFields(prev => {
@@ -120,7 +121,7 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
                                         onChange={(e) => addAdditionalField(e.target.value, null, fieldIndex)}
                                         required
                                     />
-                                    {additionalFields[fieldIndex]?.name && !nameRegex.test(additionalFields[fieldIndex]?.name) && (
+                                    {additionalFields[fieldIndex]?.name && !valueRegex.test(additionalFields[fieldIndex]?.name) && (
                                         <p className='text-red-500 text-sm'>Please enter a valid field name. It should contain only alphabets, numbers, hyphens, underscores and spaces.</p>
                                     )}
                                 <p className='text-lg font-semibold pt-1'>:</p>
@@ -131,7 +132,7 @@ const Candidate = ({ index, areAdditionalFieldsRequired, numberOfAdditionalField
                                         value={additionalFields[fieldIndex]?.value || ""}
                                         onChange={(e) => addAdditionalField(null, e.target.value, fieldIndex)}
                                     />
-                                {additionalFields[fieldIndex]?.value && !nameRegex.test(additionalFields[fieldIndex]?.value) && (
+                                {additionalFields[fieldIndex]?.value && !valueRegex.test(additionalFields[fieldIndex]?.value) && (
                                     <p className='text-red-500 text-sm'>Please enter a valid field value. It should contain only alphabets, numbers, hyphens, underscores and spaces.</p>
                                 )}
                             </div>

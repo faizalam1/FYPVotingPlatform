@@ -236,7 +236,7 @@ const CampaignCreation = () => {
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">Campaign Description</label>
                     <textarea
-                        className={`p-2 border rounded-lg w-full ${campaignDescription.length >= 10 && campaignDescription.length < 500 ? 'border-gray-300' : 'border-red-500'}`}
+                        className={`p-2 border rounded-lg w-full ${campaignDescription.length < 1024 ? 'border-gray-300' : 'border-red-500'}`}
                         placeholder="Enter Campaign Description"
                         value={campaignDescription}
                         onChange={(e) => setCampaignDescription(e.target.value)}

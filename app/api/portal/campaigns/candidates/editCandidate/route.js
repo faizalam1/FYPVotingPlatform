@@ -30,12 +30,10 @@ export async function PUT(req) {
 
     if (
         !(nameRegex.test(name) &&
-        description.length >= 10 &&
-        description.length < 500 &&
+        description.length < 1024 &&
         (image == null ||
         (typeof image === "string" &&
         urlRegex.test(image)) ||
-
         (image instanceof File &&
         image.name.split(".")[1].match(/(jpg|jpeg|png)/) &&
         image.size <= 1024 * 1024 * 2 &&

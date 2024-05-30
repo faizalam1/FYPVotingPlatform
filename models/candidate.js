@@ -7,7 +7,8 @@ const CandidateSchema = new Schema({
     },
     description: {
         type: String,
-        required: [true, "Candidate description is required!"],
+        maxLength: [1024, "Campaign description is too long!"],
+        default: ""
     },
     image: {
         type: String,

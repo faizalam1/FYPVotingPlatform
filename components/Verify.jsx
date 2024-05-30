@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Tooltip } from "react-tooltip";
+
 
 
 const Verify = () => {
@@ -96,11 +96,6 @@ const Verify = () => {
             <form className="space-y-7">
                 <div>
                     <label htmlFor="email">Email</label>
-                    <a
-                        data-tooltip-id="emailError"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid email."
-                    >
                         <input
                             type="text"
                             name="email"
@@ -110,22 +105,12 @@ const Verify = () => {
                             required
                             className="p-2 border rounded-lg border-gray-300 w-full"
                         />
-                    </a>
-                    <Tooltip
-                        id="emailError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={!email || emailRegex.test(email)}
-                    />
-
+                    {email && !emailRegex.test(email) && (
+                        <p className='text-red-500 text-sm'>Please enter a valid email.</p>
+                    )}
                 </div>
                 <div>
                     <label htmlFor="token">Verification Code</label>
-                    <a
-                        data-tooltip-id="tokenErrr"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid verification code."
-                    >
                         <input
                             type="text"
                             name="token"
@@ -134,13 +119,9 @@ const Verify = () => {
                             placeholder="Verification Code"
                             className="p-2 border rounded-lg border-gray-300 w-full"
                         />
-                    </a>
-                    <Tooltip
-                        id="tokenError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={!token || tokenRegex.test(token)}
-                    />
+                    {token && !tokenRegex.test(token) && (
+                        <p className='text-red-500 text-sm'>Please enter a valid verification code.</p>
+                    )}
                 </div>
                
                     <button

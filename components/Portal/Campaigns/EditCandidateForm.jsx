@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { Tooltip } from "react-tooltip"
+
 
 const EditCandidateForm = ({ candidate, index, updateCandidate, removeCandidate }) => {
     const [name, setName] = useState("")
@@ -81,46 +81,28 @@ const EditCandidateForm = ({ candidate, index, updateCandidate, removeCandidate 
             <h2 className="text-lg font-semibold mt-4">Candidate {index + 1}</h2>
             <div className="flex flex-col">
                 <label className="text-sm font-semibold">Candidate Name</label>
-                <a
-                    data-tooltip-id={`candidate${index}-name-tooltip`}
-                    data-tooltip-variant='error'
-                    data-tooltip-content='Please enter a valid candidate name. It should contain only letters, numbers, spaces, hyphens, and underscores. It should start with a letter and end with a letter or number.'
-                >
-                    <input
-                        type="text"
-                        className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
-                        placeholder="Enter candidate name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                </a>
-                <Tooltip
-                    id={`candidate${index}-name-tooltip`}
-                    place='bottom'
-                    effect='solid'
-                    hidden={nameRegex.test(name)}
+                <input
+                    type="text"
+                    className={`border rounded-lg p-2 mb-2 w-full ${nameRegex.test(name) ? 'border-gray-200' : 'border-red-500'}`}
+                    placeholder="Enter candidate name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                 />
+                {!nameRegex.test(name) && (
+                    <span className="text-red-500 text-xs">Please enter a valid candidate name. It should contain only letters, numbers, spaces, hyphens, and underscores. It should start with a letter and end with a letter or number.</span>
+                )}
             </div>
             <div className="flex flex-col">
                 <label className="text-sm font-semibold">Candidate Description</label>
-                <a
-                    data-tooltip-id={`candidate${index}-description-tooltip`}
-                    data-tooltip-variant='error'
-                    data-tooltip-content='Please enter a valid candidate description. It should contain atleast 10 characters not more than 500 characters.'
-                >
-                    <textarea
-                        className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
-                        placeholder="Enter candidate description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
-                </a>
-                <Tooltip
-                    id={`candidate${index}-description-tooltip`}
-                    place='bottom'
-                    effect='solid'
-                    hidden={description.length >= 10}
+                <textarea
+                    className={`border rounded-lg p-2 mb-2 w-full ${description.length >= 10 && description.length <= 500 ? 'border-gray-200' : 'border-red-500'}`}
+                    placeholder="Enter candidate description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                 />
+                {description.length > 1024 && (
+                    <span className="text-red-500 text-xs">Please enter a valid candidate description. It should contain no more than 1024 characters.</span>
+                )}
             </div>
             <div className="flex flex-col">
                 <label className="text-sm font-semibold">Candidate Image</label>
@@ -130,89 +112,80 @@ const EditCandidateForm = ({ candidate, index, updateCandidate, removeCandidate 
                     accept='image/*'
                     onChange={handleImageChange}
                 />
-                {image && (<Image className='rounded-3xl' src={image} alt={`Candidate ${index + 1} Image`} width={128} height={128} />)}
+                {image && (
+                    <Image
+                        className='rounded-3xl'
+                        src={image}
+                        alt={`Candidate ${index + 1} Image`}
+                        width={128}
+                        height={128}
+                    />
+                )}
             </div>
             <div className="flex justify-center">
-            <button
-                onClick={(e) => {
-                    e.preventDefault();
-                    setAdditionalFields((prev) => prev.concat({ "name": "", "value": "" }));
-                }}
-                className="text-sm bg-blue-500 hover:bg-blue-700 text-white font-light py-2 px-2 rounded mt-4"
-            >
-                Add Field
-            </button>
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        setAdditionalFields((prev) => prev.concat({ "name": "", "value": "" }));
+                    }}
+                    className="text-sm bg-blue-500 hover:bg-blue-700 text-white font-light py-2 px-2 rounded mt-4"
+                >
+                    Add Field
+                </button>
             </div>
             {additionalFields.map((field, fieldIndex) => (
                 <div key={fieldIndex} className="flex flex-col">
                     <h2 className="text-base font-semibold mt-4">Additional Field {fieldIndex + 1}</h2>
                     <div className='flex space-x-1 w-full'>
-                        <a
-                            data-tooltip-id={`candidate${index}-additional${fieldIndex}-field-name-tooltip`}
-                            data-tooltip-variant='error'
-                            data-tooltip-content='Please enter a field name.'
-                        >
-                            <input
-                                className='border border-gray-200 rounded-lg p-2 mb-2 w-full'
-                                type='text'
-                                placeholder='Enter field name'
-                                value={field.name || ""}
-                                onChange={(e) => changeAdditionalField(e.target.value, null, fieldIndex)}
-                            />
-                        </a>
-                        <Tooltip
-                            id={`candidate${index}-additional${fieldIndex}-field-name-tooltip`}
-                            place='bottom'
-                            effect='solid'
-                            hidden={field.name !== ""}
+                        <input
+                            className={`border rounded-lg p-2 mb-2 w-full ${field.name ? 'border-gray-200' : 'border-red-500'}`}
+                            type='text'
+                            placeholder='Enter field name'
+                            value={field.name || ""}
+                            onChange={(e) => changeAdditionalField(e.target.value, null, fieldIndex)}
                         />
+                        {!field.name && (
+                            <span className="text-red-500 text-xs">Please enter a field name.</span>
+                        )}
                         <p className='text-lg font-semibold pt-1'>:</p>
-                        <a
-                            data-tooltip-id={`candidate${index}-additional${fieldIndex}-field-value-tooltip`}
-                            data-tooltip-variant='error'
-                            data-tooltip-content='Please enter a field value.'
-                        >
-                            <input
-                                className='border border-gray-200 rounded-lg p-2 mb-2 w-full'
-                                type='text'
-                                placeholder='Enter field value'
-                                value={field.value || ""}
-                                onChange={(e) => changeAdditionalField(null, e.target.value, fieldIndex)}
-                            />
-                        </a>
-                        <Tooltip
-                            id={`candidate${index}-additional${fieldIndex}-field-value-tooltip`}
-                            place='bottom'
-                            effect='solid'
-                            hidden={field.value !== ""}
+                        <input
+                            className={`border rounded-lg p-2 mb-2 w-full ${field.value ? 'border-gray-200' : 'border-red-500'}`}
+                            type='text'
+                            placeholder='Enter field value'
+                            value={field.value || ""}
+                            onChange={(e) => changeAdditionalField(null, e.target.value, fieldIndex)}
                         />
+                        {!field.value && (
+                            <span className="text-red-500 text-xs">Please enter a field value.</span>
+                        )}
                     </div>
                     <div className="flex justify-center">
-                    <button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setAdditionalFields((prev) => prev.filter((_, i) => i !== fieldIndex));
-                        }}
-                        className="text-sm bg-red-500 hover:bg-red-700 text-white font-light py-2 px-4 rounded mt-4"
-                    >
-                        Remove Field
-                    </button>
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setAdditionalFields((prev) => prev.filter((_, i) => i !== fieldIndex));
+                            }}
+                            className="text-sm bg-red-500 hover:bg-red-700 text-white font-light py-2 px-4 rounded mt-4"
+                        >
+                            Remove Field
+                        </button>
                     </div>
                 </div>
             ))}
             <div className="flex justify-center">
-            <button 
-                onClick={(e) => {
-                    e.preventDefault();
-                    removeCandidate(index);
-                }}
-                className="text-sm font-light bg-red-500 hover:bg-red-700 text-white py-2 px-2 rounded mt-4"
-            >
-                Remove Candidate
-            </button>
+                <button 
+                    onClick={(e) => {
+                        e.preventDefault();
+                        removeCandidate(index);
+                    }}
+                    className="text-sm font-light bg-red-500 hover:bg-red-700 text-white py-2 px-2 rounded mt-4"
+                >
+                    Remove Candidate
+                </button>
             </div>
         </div>
     )
+    
 }
 
 export default EditCandidateForm

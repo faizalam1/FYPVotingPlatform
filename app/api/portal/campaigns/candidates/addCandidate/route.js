@@ -29,8 +29,7 @@ export async function POST(req) {
 
     if (
         !(nameRegex.test(name) &&
-        description.length >= 10 &&
-        description.length < 500 &&
+        description.length < 1024 &&
         image == null ||
         (image instanceof File &&
         image.name.split(".")[1].match(/(jpg|jpeg|png)/) &&

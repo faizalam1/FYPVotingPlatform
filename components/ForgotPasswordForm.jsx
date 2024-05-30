@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Tooltip } from 'react-tooltip';
 
 const ForgotPasswordForm = () => {
     const [email, setEmail] = useState('');
@@ -74,11 +73,7 @@ const ForgotPasswordForm = () => {
             <form className="space-y-7">
                 <div>
                     <label htmlFor="email">Email</label>
-                    <a
-                        data-tooltip-id="emailError"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid email."
-                    ><br />
+                    <br />
                         <input
                             type="text"
                             name="email"
@@ -88,21 +83,13 @@ const ForgotPasswordForm = () => {
                             required
                             className="p-2 border rounded-lg border-gray-300 w-full"
                         />
-                    </a>
-                    <Tooltip
-                        id="emailError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={!email || emailRegex.test(email)}
-                    />
+                    {email && !emailRegex.test(email) && (
+                        <p className='text-red-500 text-sm'>Please enter a valid email.</p>
+                    )}
                 </div>
                 <div>
                     <label htmlFor="token">Token</label>
-                    <a
-                        data-tooltip-id="tokenError"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid token."
-                    ><br />
+                    <br />
                         <input
                             type="text"
                             name="token"
@@ -112,21 +99,13 @@ const ForgotPasswordForm = () => {
                             required
                             className="p-2 border rounded-lg border-gray-300 w-full"
                         />
-                    </a>
-                    <Tooltip
-                        id="tokenError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={!token || tokenRegex.test(token)}
-                    />
+                    {token && !tokenRegex.test(token) && (
+                        <p className='text-red-500 text-sm'>Please enter a valid token.</p>
+                    )}
                 </div>
                 <div>
                     <label htmlFor="password">Password</label>
-                    <a
-                        data-tooltip-id="passwordError"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Password invalid, it should contain at least 1 lowercase letter, 1 uppercase letter, 1 number, 1 special character and be atleast 8 characters long."
-                    ><br />
+                    <br />
                         <input
                             type="password"
                             name="password"
@@ -136,21 +115,13 @@ const ForgotPasswordForm = () => {
                             required
                             className="p-2 border rounded-lg border-gray-300 w-full"
                         />
-                    </a>
-                    <Tooltip
-                        id="passwordError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={!password || !passwordRegex.test(password)}
-                    />
+                    {password && passwordRegex.test(password) && (
+                        <p className='text-red-500 text-sm'>Password invalid, it should contain at least 1 lowercase letter, 1 uppercase letter, 1 number, 1 special character and be atleast 8 characters long.</p>
+                    )}
                 </div>
                 <div>
                     <label htmlFor="password2">Confirm Password</label>
-                    <a
-                        data-tooltip-id="password2Error"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Passwords do not match!"
-                    ><br />
+                    <br />
                         <input
                             type="password"
                             name="password2"
@@ -160,13 +131,9 @@ const ForgotPasswordForm = () => {
                             required
                             className="p-2 border rounded-lg border-gray-300 w-full"
                         />
-                    </a>
-                    <Tooltip
-                        id="password2Error"
-                        place="bottom"
-                        effect="solid"
-                        hidden={!password2 || password == password2}
-                    />
+                    {password2 && password !== password2 && (
+                        <p className='text-red-500 text-sm'>Passwords do not match.</p>
+                    )}
                 </div>
                 <button
                     onClick={handleForgotPassword}

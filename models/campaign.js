@@ -8,9 +8,8 @@ const CampaignSchema = new Schema({
     },
     description: {
         type: String,
-        maxLength: [500, "Campaign description is too long!"],
-        minLength: [10, "Campaign description is too short!"],
-        required: [true, "Campaign description is required!"],
+        maxLength: [1024, "Campaign description is too long!"],
+        default: "",
     },
     votingType: {
         type: String,

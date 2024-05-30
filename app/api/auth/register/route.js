@@ -15,7 +15,6 @@ export async function POST(req) {
   );
   const nameRegex = new RegExp(/^[a-zA-Z ]+$/);
   const usernameRegex = new RegExp(/^[a-zA-Z][a-zA-Z0-9_]*$/);
-  const secretRegex = new RegExp(/^[a-zA-Z0-9_]{8,}$/);
 
   if (!usernameRegex.test(username)) {
     return NextResponse.json(
@@ -38,11 +37,11 @@ export async function POST(req) {
       { status: 400 }
     );
   }
-  if (!secretRegex.test(secret)) {
+  if (passwordRegex.test(secret)) {
     return NextResponse.json(
       {
         error:
-          "Secret invalid, it should contain only letters, numbers and underscores and be atleast 8 characters long!",
+          "Secret invalid, it should contain at least 1 lowercase letter, 1 uppercase letter, 1 number, 1 special character and be atleast 8 characters long!",
       },
       { status: 400 }
     );
@@ -89,7 +88,7 @@ export async function POST(req) {
   const hashedSecret = await bcrypt.hash(secret, 10);
 
   const user = await User.create({ email:email, password: hashedPassword, secret:hashedSecret, firstName:firstName, lastName:lastName, username:username });
-  console.log(user);
+  
   if (!user) {
     return NextResponse.json(
       { error: "Internal Server Error!" },

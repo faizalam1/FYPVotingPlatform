@@ -59,9 +59,9 @@ export async function POST(req) {
   }
 
   const user = session.user;
-  console.log(campaign);
-  console.log(campaign.candidates);
-  console.log(user);
+  
+  
+  
 
   const campaignNameRegex = new RegExp(/^[a-zA-Z0-9 ]+$/);
   const votingTypeRegex = new RegExp(/^(Default|Ranked)$/);
@@ -75,8 +75,7 @@ export async function POST(req) {
   if (
     !(
       campaignNameRegex.test(campaign.campaignName) &&
-      campaign.campaignDescription.length >= 10 &&
-      campaign.campaignDescription.length < 500 &&
+      campaign.campaignDescription.length < 1024 &&
       votingTypeRegex.test(campaign.votingType) &&
       viewResultsRegex.test(campaign.viewResults) &&
       datetimeISORegex.test(campaign.campaignStart) &&
@@ -95,8 +94,7 @@ export async function POST(req) {
       campaign.candidates.every(
         (candidate) =>
           candidateNameRegex.test(candidate.name) &&
-          candidate.description.length >= 10 &&
-          candidate.description.length < 500 &&
+          candidate.description.length < 1024 &&
           candidate.additionalFields.length == campaign.numberOfAdditionalFields &&
           candidate.additionalFields.every((field) => field.name && field.value)
       ) &&
@@ -115,7 +113,7 @@ export async function POST(req) {
     )
   ) {
     campaign.candidates.forEach((candidate) => {
-      console.log(candidate);
+      
     }
     );
     return NextResponse.json(
@@ -155,7 +153,7 @@ export async function POST(req) {
     createdBy: user.id,
   });
 
-  console.log(campaignRecord)
+  
 
   for (let i = 0; i < campaign.numberOfCandidates; i++) {
     const candidate = campaign.candidates[i];
@@ -164,7 +162,7 @@ export async function POST(req) {
       campaignID: campaignRecord.id,
     });
     if (candidateNameExists) {
-      console.log(candidateNameExists)
+      
       return NextResponse.json(
         { error: "Candidate name already exists!" },
         { status: 400 }

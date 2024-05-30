@@ -1,7 +1,7 @@
 'use client'
-import { useState } from 'react'
-import Candidate from '@/components/Portal/Campaigns/Candidate'
-import { Tooltip } from "react-tooltip";
+import { useState } from 'react';
+import Candidate from '@/components/Portal/Campaigns/Candidate';
+import { useRouter } from 'next/navigation';
 
 const CampaignCreation = () => {
     const [campaignName, setCampaignName] = useState('');
@@ -18,6 +18,8 @@ const CampaignCreation = () => {
     const [candidates, setCandidates] = useState(Array.from({ length: numberOfCandidates }, (_, index) => {
         return { name: '', description: '', image: null, additionalFields: [] }
     }));
+
+    const router = useRouter();
 
     const convertDateTimetoUTC = (datetime) => {
         const date = new Date(datetime);
@@ -111,8 +113,8 @@ const CampaignCreation = () => {
             alert("Invalid Campaign Name");
             return;
         }
-        if (campaignDescription.length < 10 || campaignDescription.length > 500) {
-            alert("Campaign Description should be atleast 10 characters long, not more than 500.");
+        if (campaignDescription.length > 1024) {
+            alert("Campaign Description should be no more than 1024 characters.");
             return;
         }
         if (votingTypeRegex.test(votingType) === false) {
@@ -150,8 +152,7 @@ const CampaignCreation = () => {
         if (
             !(candidates.every(candidate =>
                 candidateNameRegex.test(candidate.name) &&
-                candidate.description.length >= 10 &&
-                candidate.description.length < 500 &&
+                candidate.description.length <= 1024 &&
                 candidate.additionalFields.length === numberOfAdditionalFields &&
                 candidate.additionalFields.every(field => field.name && field.value)
             ))
@@ -205,8 +206,11 @@ const CampaignCreation = () => {
             body: formData
         })
 
-        if (res.status == 201)
+        if (res.status == 201){
             alert("Campaign Created Successfully");
+            router.push("/portal/campaigns");
+            router.refresh();
+        }
         else
             alert(res.status + "\n" + (await res.json()).error)
     }
@@ -217,142 +221,83 @@ const CampaignCreation = () => {
             <form className="flex flex-col space-y-4 justify-center w-3/4">
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">Campaign Name</label>
-                    <a
-                        data-tooltip-id="CampaignNameError"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid name. It should contain only letters, numbers and space."
-                    >
-                        <input
-                            type="text"
-                            className="p-2 border rounded-lg border-gray-300 w-full"
-                            placeholder="Enter Campaign Name"
-                            value={campaignName}
-                            onChange={(e) => setCampaignName(e.target.value)}
-                            required
-                        />
-                    </a>
-                    <Tooltip
-                        id="CampaignNameError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={nameRegex.test(campaignName)}
+                    <input
+                        type="text"
+                        className={`p-2 border rounded-lg w-full ${nameRegex.test(campaignName) ? 'border-gray-300' : 'border-red-500'}`}
+                        placeholder="Enter Campaign Name"
+                        value={campaignName}
+                        onChange={(e) => setCampaignName(e.target.value)}
+                        required
                     />
+                    {!nameRegex.test(campaignName) && (
+                        <span className="text-red-500 text-xs">Please enter a valid name. It should contain only letters, numbers, and spaces.</span>
+                    )}
                 </div>
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">Campaign Description</label>
-                    <a
-                        data-tooltip-id="CampaignDescriptionError"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid description. It should contain atleast 10 characters."
-                    >
-                        <textarea
-                            className="p-2 border rounded-lg border-gray-300 w-full"
-                            placeholder="Enter Campaign Description"
-                            value={campaignDescription}
-                            onChange={(e) => setCampaignDescription(e.target.value)}
-                            required
-                        />
-                    </a>
-                    <Tooltip
-                        id="CampaignDescriptionError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={campaignDescription.length >= 10 && campaignDescription.length < 500}
+                    <textarea
+                        className={`p-2 border rounded-lg w-full ${campaignDescription.length < 1024 ? 'border-gray-300' : 'border-red-500'}`}
+                        placeholder="Enter Campaign Description"
+                        value={campaignDescription}
+                        onChange={(e) => setCampaignDescription(e.target.value)}
                     />
+                    {campaignDescription.length > 1024 && (
+                        <p className="text-red-500 text-xs">Please enter a valid description. It should be less than 1024 characters.</p>
+                    )}
                 </div>
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">Voting Type</label>
-                    <a
-                        data-tooltip-id="VotingTypeError"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid voting type. It should be either Default or Ranked."
+                    <select
+                        className={`p-2 border rounded-lg w-full ${votingTypeRegex.test(votingType) ? 'border-gray-300' : 'border-red-500'}`}
+                        value={votingType}
+                        onChange={(e) => setVotingType(e.target.value)}
+                        required
                     >
-                        <select
-                            className="p-2 border rounded-lg border-gray-300 w-full"
-                            value={votingType}
-                            onChange={(e) => setVotingType(e.target.value)}
-                            required
-                        >
-                            <option value="Default">Default</option>
-                            <option value="Ranked">Ranked</option>
-                        </select>
-                    </a>
-                    <Tooltip
-                        id="VotingTypeError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={votingTypeRegex.test(votingType)}
-                    />
+                        <option value="Default">Default</option>
+                        <option value="Ranked">Ranked</option>
+                    </select>
+                    {!votingTypeRegex.test(votingType) && (
+                        <span className="text-red-500 text-xs">Please enter a valid voting type. It should be either Default or Ranked.</span>
+                    )}
                 </div>
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">View Results</label>
-                    <a
-                        data-tooltip-id="ViewResultsError"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid view results type. It should be either PostVoting or Live."
+                    <select
+                        className={`p-2 border rounded-lg w-full ${viewResultsRegex.test(viewResults) ? 'border-gray-300' : 'border-red-500'}`}
+                        value={viewResults}
+                        onChange={(e) => setViewResults(e.target.value)}
+                        required
                     >
-                        <select
-                            className="p-2 border rounded-lg border-gray-300 w-full"
-                            value={viewResults}
-                            onChange={(e) => setViewResults(e.target.value)}
-                            required
-                        >
-                            <option value="PostVoting">PostVoting</option>
-                            <option value="Live">Live</option>
-                        </select>
-                    </a>
-                    <Tooltip
-                        id="ViewResultsError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={viewResultsRegex.test(viewResults)}
-                    />
+                        <option value="PostVoting">PostVoting</option>
+                        <option value="Live">Live</option>
+                    </select>
+                    {!viewResultsRegex.test(viewResults) && (
+                        <span className="text-red-500 text-xs">Please enter a valid view results type. It should be either PostVoting or Live.</span>
+                    )}
                 </div>
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">Campaign Start</label>
-                    <a
-                        data-tooltip-id="CampaignStartError"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid start datetime like 2024-04-24T20:50."
-                    >
-                        <input
-                            type="datetime-local"
-                            className="p-2 border rounded-lg border-gray-300 w-full"
-                            onChange={(e) => setCampaignStart(convertDateTimetoUTC(e.target.value))}
-                            required
-                        />
-                    </a>
-                    <Tooltip
-                        id="CampaignStartError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={datetimeISORegex.test(campaignStart)}
+                    <input
+                        type="datetime-local"
+                        className={`p-2 border rounded-lg w-full ${datetimeISORegex.test(campaignStart) ? 'border-gray-300' : 'border-red-500'}`}
+                        onChange={(e) => setCampaignStart(convertDateTimetoUTC(e.target.value))}
+                        required
                     />
+                    {!datetimeISORegex.test(campaignStart) && (
+                        <span className="text-red-500 text-xs">Please enter a valid start datetime like 2024-04-24T20:50.</span>
+                    )}
                 </div>
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">Campaign End</label>
-                    <a
-                        data-tooltip-id="CampaignEndError"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid end date like 2024-04-24T20:50."
-                    >
-                        <input
-                            type="datetime-local"
-                            className="p-2 border rounded-lg border-gray-300 w-full"
-                            onChange={(e) => setCampaignEnd(convertDateTimetoUTC(e.target.value))}
-                            required
-                        />
-                    </a>
-                    <Tooltip
-                        id="CampaignEndError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={
-                            datetimeISORegex.test(campaignEnd)
-                            ||
-                            new Date(campaignStart) < new Date(campaignEnd)
-                        }
+                    <input
+                        type="datetime-local"
+                        className={`p-2 border rounded-lg w-full ${(datetimeISORegex.test(campaignEnd) && new Date(campaignStart) < new Date(campaignEnd)) ? 'border-gray-300' : 'border-red-500'}`}
+                        onChange={(e) => setCampaignEnd(convertDateTimetoUTC(e.target.value))}
+                        required
                     />
+                    {(!datetimeISORegex.test(campaignEnd) || new Date(campaignStart) >= new Date(campaignEnd)) && (
+                        <span className="text-red-500 text-xs">Please enter a valid end datetime and ensure it is after the start datetime.</span>
+                    )}
                 </div>
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">
@@ -367,48 +312,30 @@ const CampaignCreation = () => {
                 {isRestrictedByEmail && (
                     <div className="flex flex-col">
                         <label className="text-sm font-semibold">Allowed Domains</label>
-                        <a
-                            data-tooltip-id="DomainsError"
-                            data-tooltip-variant="error"
-                            data-tooltip-content="Please enter a valid domain. It should be a comma separated list of domains."
-                        >
-                            <input
-                                type="text"
-                                className="p-2 border rounded-lg border-gray-300 w-full"
-                                placeholder="Domain1, Domain2, ..."
-                                value={domains.join(', ')}
-                                onChange={(e) => setDomains(e.target.value.split(', '))}
-                            />
-                        </a>
-                        <Tooltip
-                            id="DomainsError"
-                            place="bottom"
-                            effect="solid"
-                            hidden={domainsRegex.test(domains.join(', '))}
+                        <input
+                            type="text"
+                            className={`p-2 border rounded-lg w-full ${domainsRegex.test(domains.join(', ')) ? 'border-gray-300' : 'border-red-500'}`}
+                            placeholder="Domain1, Domain2, ..."
+                            value={domains.join(', ')}
+                            onChange={(e) => setDomains(e.target.value.split(', '))}
                         />
+                        {!domainsRegex.test(domains.join(', ')) && (
+                            <span className="text-red-500 text-xs">Please enter a valid domain. It should be a comma separated list of domains.</span>
+                        )}
                     </div>
                 )}
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">Number of Candidates</label>
-                    <a
-                        data-tooltip-id="NumberOfCandidatesError"
-                        data-tooltip-variant="error"
-                        data-tooltip-content="Please enter a valid number. It should be atleast 2."
-                    >
-                        <input
-                            type="number"
-                            className="p-2 border rounded-lg border-gray-300 w-full"
-                            value={numberOfCandidates}
-                            onChange={(e) => changeNumberOfCandidates(parseInt(e.target.value))}
-                            required
-                        />
-                    </a>
-                    <Tooltip
-                        id="NumberOfCandidatesError"
-                        place="bottom"
-                        effect="solid"
-                        hidden={numberOfCandidates >= 2}
+                    <input
+                        type="number"
+                        className={`p-2 border rounded-lg w-full ${numberOfCandidates >= 2 ? 'border-gray-300' : 'border-red-500'}`}
+                        value={numberOfCandidates}
+                        onChange={(e) => changeNumberOfCandidates(parseInt(e.target.value))}
+                        required
                     />
+                    {numberOfCandidates < 2 && (
+                        <span className="text-red-500 text-xs">Please enter a valid number. It should be at least 2.</span>
+                    )}
                 </div>
                 <div className="flex flex-col">
                     <label className="text-sm font-semibold">
@@ -423,24 +350,15 @@ const CampaignCreation = () => {
                 {areAdditionalFieldsRequired && (
                     <div className="flex flex-col">
                         <label className="text-sm font-semibold">Number of Additional Fields</label>
-                        <a
-                            data-tooltip-id="NumberOfAdditionalFieldsError"
-                            data-tooltip-variant="error"
-                            data-tooltip-content="Please enter a valid number. It should be atleast 1."
-                        >
-                            <input
-                                type="number"
-                                className="border border-gray-200 rounded-lg p-2 mb-2 w-full"
-                                value={numberOfAdditionalFields}
-                                onChange={(e) => changeNumberOfAdditionalFields(parseInt(e.target.value))}
-                            />
-                        </a>
-                        <Tooltip
-                            id="NumberOfAdditionalFieldsError"
-                            place="bottom"
-                            effect="solid"
-                            hidden={numberOfAdditionalFields >= 1}
+                        <input
+                            type="number"
+                            className={`border border-gray-200 rounded-lg p-2 mb-2 w-full ${numberOfAdditionalFields >= 1 ? 'border-gray-300' : 'border-red-500'}`}
+                            value={numberOfAdditionalFields}
+                            onChange={(e) => changeNumberOfAdditionalFields(parseInt(e.target.value))}
                         />
+                        {numberOfAdditionalFields < 1 && (
+                            <span className="text-red-500 text-xs">Please enter a valid number. It should be at least 1.</span>
+                        )}
                     </div>
                 )}
                 <div>
@@ -449,7 +367,7 @@ const CampaignCreation = () => {
                 <div>
                     <h2 className="text-lg font-semibold mt-4">Candidates</h2>
                 </div>
-
+    
                 {Array.from({ length: numberOfCandidates }, (_, index) => {
                     return <Candidate
                         key={index}
@@ -459,17 +377,17 @@ const CampaignCreation = () => {
                         addCandidate={addCandidate}
                     />
                 })}
-
+    
                 <button
                     className="bg-blue-500 text-white font-semibold p-2 rounded-lg"
                     onClick={handleSubmit}>
                     Create Campaign
                 </button>
-
+    
             </form>
-
+    
         </section>
-    )
+    )    
 }
 
 export default CampaignCreation;

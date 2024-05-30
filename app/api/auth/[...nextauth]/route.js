@@ -7,12 +7,13 @@ import bcrypt from "bcrypt";
 export const authOptions = {
   session: {
     jwt: true,
+    maxAge: 2 * 60 * 60,
   },
   pages: {
     signIn: "/app/auth",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }) {      
       if (user) {
         token = { ...token, user };
       }

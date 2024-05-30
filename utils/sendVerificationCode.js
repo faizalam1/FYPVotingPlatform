@@ -6,7 +6,7 @@ export async function sendVerificationCode(email, user, forgotPassword = false) 
   try {
     await connectToDatabase();
   } catch (err) {
-    console.log(err);
+    
     return { message: "Error: Cannot Connect to Database!" };
   }
 
@@ -22,7 +22,6 @@ export async function sendVerificationCode(email, user, forgotPassword = false) 
     token: verificationCode,
   });
   if (!userVerification) {
-    console.log("User Verification not created!");
     return { message: "Error: User Verification not created!" };
   }
 
@@ -58,9 +57,6 @@ else{
   if (!mailgunResponse.ok) {
     console.error(mailgunResponse);
     return { message: "Error: Mailgun Error!" };
-  }
-  else{
-    console.log(mailgunResponse.text());
   }
     
   return { message: "Verification code sent!" };

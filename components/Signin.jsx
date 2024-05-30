@@ -2,7 +2,7 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Tooltip } from "react-tooltip";
+
 
 
 const Signin = () => {
@@ -42,7 +42,7 @@ const Signin = () => {
       alert("Email not found!")
     }
     else {
-      console.log(response)
+      
       alert("Password Reset Failed!")
       window.location.reload();
     }
@@ -64,7 +64,7 @@ const Signin = () => {
       password: password,
       redirect: false
     });
-    console.log(response);
+    
     if (response.status == 200) {
       if (callbackURL) {
         router.push(callbackURL);
@@ -94,11 +94,7 @@ const Signin = () => {
       <form className="space-y-4">
         <div>
           <label htmlFor="email">Email</label>
-          <a
-            data-tooltip-id="emailError"
-            data-tooltip-variant="error"
-            data-tooltip-content="Please enter a valid email."
-          ><br />
+          <br />
           <input
          className="p-2 border rounded-lg border-gray-300 w-full"
             type="text"
@@ -109,13 +105,10 @@ const Signin = () => {
             required
           
           />
-          </a>
-          <Tooltip
-            id="emailError"
-            place="bottom"
-            effect="solid"
-            hidden={!email || emailRegex.test(email)}
-          />
+          { email && !emailRegex.test(email) && (
+            <p className="text-red-500 text-sm">Please enter a valid email.</p>
+          )}
+          
         </div>
         <div>
           <label htmlFor="password">Password</label>
@@ -142,7 +135,7 @@ const Signin = () => {
           <button
             onClick={handleSignin}
             disabled={!email || !password || !emailRegex.test(email)}
-            className="p-2 bg-indigo-700 rounded-xl text-white hover:bg-indigo-900 font-medium w-full"
+            className="p-2 bg-indigo-700 rounded-xl text-white hover:bg-indigo-900 font-medium w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Sign In
           </button>

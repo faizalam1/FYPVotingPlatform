@@ -47,6 +47,6 @@ export async function PATCH(req) {
 
   await UserVerification.deleteOne({ _userId: user._id, token });
   await User.updateOne({ _id: user._id }, { isVerified: true, resetCodeRequests: 0 });
-  console.log("User verified!");
+  
   return NextResponse.json({ message: "User verified!" }, { status: 200 });
 }

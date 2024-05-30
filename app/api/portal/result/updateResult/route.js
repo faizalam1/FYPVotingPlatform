@@ -31,7 +31,7 @@ const calculateRankedResult = (candidatesInput, votesInput) => {
   const results = [];
   let candidates = [...candidatesInput];
   let votes = votesInput.map((vote) => [...vote.vote]);
-  console.log(votes)
+  
   let round = 0;
 
   while (candidates.length > 0) {
@@ -51,7 +51,7 @@ const calculateRankedResult = (candidatesInput, votesInput) => {
         candidate =>
           candidate.candidateID.toString() === topCandidate.candidateID.toString()
       );
-      console.log(candidateResult)
+      
       if (candidateResult) {
         candidateResult.votes += 1;
       }

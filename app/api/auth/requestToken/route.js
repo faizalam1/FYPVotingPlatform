@@ -7,7 +7,7 @@ export async function POST(req) {
   try {
     await connectToDatabase();
   } catch (err) {
-    console.log(err)
+    
     return NextResponse.json(
       { error: "Internal Server Error!" },
       { status: 500 }

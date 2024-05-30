@@ -13,9 +13,7 @@ export const authOptions = {
     signIn: "/app/auth",
   },
   callbacks: {
-    async jwt({ token, user }) {
-      console.log(token, user)
-      
+    async jwt({ token, user }) {      
       if (user) {
         token = { ...token, user };
       }

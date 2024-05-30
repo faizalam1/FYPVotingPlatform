@@ -42,7 +42,7 @@ const Signin = () => {
       alert("Email not found!")
     }
     else {
-      console.log(response)
+      
       alert("Password Reset Failed!")
       window.location.reload();
     }
@@ -64,7 +64,7 @@ const Signin = () => {
       password: password,
       redirect: false
     });
-    console.log(response);
+    
     if (response.status == 200) {
       if (callbackURL) {
         router.push(callbackURL);

@@ -89,7 +89,7 @@ export async function POST(req) {
   const hashedSecret = await bcrypt.hash(secret, 10);
 
   const user = await User.create({ email:email, password: hashedPassword, secret:hashedSecret, firstName:firstName, lastName:lastName, username:username });
-  console.log(user);
+  
   if (!user) {
     return NextResponse.json(
       { error: "Internal Server Error!" },

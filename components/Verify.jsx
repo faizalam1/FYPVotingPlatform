@@ -76,7 +76,7 @@ const Verify = () => {
         
         })
             .then((response) => {
-                console.log(response)
+                
                 if (response.status == 200) {
                     alert("Verification code sent!")
                 }

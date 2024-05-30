@@ -17,7 +17,7 @@ const downloadCandidatePicture = async (picturePath) => {
     let filePath = picturePath.split("/").slice(4).join("/");
     const blockBlobClient = containerClient.getBlockBlobClient(filePath);
     if (!(await blockBlobClient.exists())) {
-        console.log(filePath)
+        
         throw new Error("File does not exist");
     }
     const fileBuffer = await blockBlobClient.downloadToBuffer();

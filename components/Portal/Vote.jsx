@@ -85,7 +85,7 @@ const Vote = ({ campaignID }) => {
     }, [campaignID])
 
     useEffect(() => {
-        console.log(vote)
+        
     },[vote])
 
     const handleVote = async () => {

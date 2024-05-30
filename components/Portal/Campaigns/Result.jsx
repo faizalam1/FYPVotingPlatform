@@ -91,7 +91,7 @@ const Result = ({ campaignID }) => {
                 if (live && refreshTime == -1) {
                     setRefreshTime(120000);
                 }
-                console.log(data);
+                
                 setCampaign(data);
             }
             else if (response.status == 403) {

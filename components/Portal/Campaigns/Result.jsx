@@ -1,20 +1,23 @@
 "use client"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import ToggleSwitch from "@/components/ToggleSwitch";
-import { set } from "mongoose";
+import { useSession } from "next-auth/react";
+
 
 const Result = ({ campaignID }) => {
     const [campaign, setCampaign] = useState({});
     const [result, setResult] = useState([]);
     const [isResultPublished, setIsResultPublished] = useState(false);
     const [isLive, setIsLive] = useState(false);
-    const [reupdateResult, setReupdateResult] = useState(true);
-    const [refreshTime, setRefreshTime] = useState(-1);
     const [round, setRound] = useState(0);
 
-    const barColors = ["FF7F7F","FFBF7F","77DD77","7FBFFF","7F7FFF","BF7FFF"]
+    const { data: session, status } = useSession();
+    const user = session?.user;
 
     useEffect(() => {
+        let reupdateResult = true;
+        let refreshTime = -1;
+
         const fetchCampaign = async () => {
             const response = await fetch(`/api/portal/vote/getCampaign?id=${campaignID}`);
             if (response.status == 200) {
@@ -23,8 +26,10 @@ const Result = ({ campaignID }) => {
                 const live = data.viewResults == "Live" && new Date(data.endDateTime) > new Date();
                 setIsLive(live);
                 if (live && refreshTime == -1) {
-                    setRefreshTime(120000);
+                    refreshTime = 10000;
                 }
+                if (!live)
+                    reupdateResult = false;
                 setCampaign(data);
             }
             else if (response.status == 403) {
@@ -63,8 +68,10 @@ const Result = ({ campaignID }) => {
             }
     
         const fetchResult = async () => {
+            await fetchCampaign();
             if (!reupdateResult) {
                 await getResult();
+                return;
             }
             const updateResult = await fetch(`/api/portal/result/updateResult?id=${campaignID}`, {
                 method: 'PUT'
@@ -75,7 +82,7 @@ const Result = ({ campaignID }) => {
             else if (updateResult.status == 400) {
                 const data = await updateResult.json();
                 if (data.error == "Result already calculated!")
-                    setReupdateResult(false);
+                    reupdateResult = false;
             }
             else if (updateResult.status == 403) {
                 alert("User is not allowed to view this campaign");
@@ -92,7 +99,6 @@ const Result = ({ campaignID }) => {
     
         }
 
-        fetchCampaign();
         fetchResult();
 
         if (refreshTime > 0) {
@@ -102,7 +108,7 @@ const Result = ({ campaignID }) => {
             }, refreshTime);
             return () => clearInterval(interval);
         }
-    }, [refreshTime, campaignID, reupdateResult])
+    }, [campaignID])
 
     const publishResult = async (isPublished) => {
         const response = await fetch('/api/portal/result/editPublishResult', {
@@ -126,6 +132,7 @@ const Result = ({ campaignID }) => {
         }
         else {
             alert("Error publishing result");
+            console.log(response)
         }
     }
     return (
@@ -154,7 +161,7 @@ const Result = ({ campaignID }) => {
                     className="flex flex-col flex-grow space-y-4"
                 >
                     <div className="flex flex-grow">
-                        <div className="flex justify-center items-center">
+                        {(result?.type == "Ranked") && (<div className="flex justify-center items-center">
                             <button
                                 className="text-4xl p-4 bg-[#d0d1d3] hover:bg-[#f3f4f6] rounded-xl disabled:opacity-25 disabled:cursor-not-allowed"
                                 disabled={round == 0 || result.type == "Default"}
@@ -162,7 +169,7 @@ const Result = ({ campaignID }) => {
                             >
                                 &#10094;
                             </button>
-                        </div>
+                        </div>)}
                         <div className="flex flex-col flex-grow">
                             <div
                                 className="flex flex-grow-0 justify-between bg-[#f3f4f6] p-4 rounded-xl"
@@ -196,21 +203,26 @@ const Result = ({ campaignID }) => {
                                             className="bg-[#f3f4f6] rounded-xl"
                                         >
                                             <div 
-                                            className={`p-2 rounded-xl overflow-hidden text-sm text-center`} 
+                                            className="p-2 rounded-xl"
                                             style={{width: `${((candidate.votes)/result.totalVotes)*100}%`,
-                                                    backgroundColor: candidate.votes == 0 ? "transparent" : `#${barColors[index % 6]}`
+                                                    backgroundColor: candidate.votes == 0 ? "transparent" : `#${["FF7F7F","FFBF7F","77DD77","7FBFFF","7F7FFF","BF7FFF"][index % 6]}`
                                             }}>
-                                                {candidate.name}
+                                                <div className="text-sm text-center w-full bg-transparent">
+                                                    {candidate.name}
+                                                </div>
                                             </div>
                                         </div>
                                     )
                                 })
                             }
                             </div>
+                            {(result?.type == "Ranked") && (
                             <div className="flex flex-grow-0 justify-between p-4 rounded-xl text-sm font-thin">
                                 Round {round+1} of {result?.result?.length}
                             </div>
+                            )}
                         </div>
+                        {(result?.type == "Ranked") && (
                         <div className="flex justify-center items-center">
                             <button
                                 className="text-4xl p-4 bg-[#d0d1d3] hover:bg-[#f3f4f6] rounded-xl disabled:opacity-25 disabled:cursor-not-allowed"
@@ -220,15 +232,19 @@ const Result = ({ campaignID }) => {
                                 &#10095;
                             </button>
                         </div>
+                        )}
                     </div>
                 </div>
-                <div>
-                    <ToggleSwitch
-                        isChecked={isResultPublished}
-                        handleCheckboxChange={() => publishResult(!isResultPublished)}
-                        labelText="Publish Result"
-                    />
-                </div>
+                {
+                    campaign?.createdBy == user?.id &&
+                    (<div>
+                        <ToggleSwitch
+                            isChecked={isResultPublished}
+                            handleCheckboxChange={() => publishResult(!isResultPublished)}
+                            labelText="Publish Result"
+                        />
+                    </div>)
+                }
             </div>
         </div>
     )

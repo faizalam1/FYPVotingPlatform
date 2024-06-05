@@ -125,8 +125,9 @@ const Signin = () => {
         <div className="text-center font-medium  ">
           <button 
             onClick={handleForgotPassword}
-          disabled={!email || !emailRegex.test(email)}
-          className="cursor-pointer underline underline-offset-4"
+            disabled={!email || !emailRegex.test(email)}
+            type="button"
+            className="cursor-pointer underline underline-offset-4"
           >
            Forgot Password?
           </button>
@@ -135,6 +136,7 @@ const Signin = () => {
           <button
             onClick={handleSignin}
             disabled={!email || !password || !emailRegex.test(email)}
+            type="submit"
             className="p-2 bg-indigo-700 rounded-xl text-white hover:bg-indigo-900 font-medium w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Sign In

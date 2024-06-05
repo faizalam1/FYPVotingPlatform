@@ -74,7 +74,7 @@ export async function POST(req) {
         );
     }
     let candidate;
-    let rankArray;
+    let rankArray = [];
     rankedVote.forEach(async (candidateVote, index) => {
         if (rankArray.includes(candidateVote.rank)) {
             return NextResponse.json(

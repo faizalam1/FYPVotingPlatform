@@ -20,8 +20,7 @@ export async function PATCH(req) {
         if (!campaign) {
             return NextResponse.json({ error: "Campaign not found!" }, { status: 404 });
         }
-        campaign.isResultsPublic = isResultsPublic;
-        await campaign.save();
+        await Campaign.updateOne({ _id: CampaignID }, { isResultsPublic: isResultsPublic });
         return NextResponse.json({ message: "Campaign Edited" }, { status: 200 });
     } catch (err) {
         return NextResponse.json(

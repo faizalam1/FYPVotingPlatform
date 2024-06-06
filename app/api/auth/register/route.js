@@ -7,7 +7,9 @@ import bcrypt from "bcrypt";
 
 export async function POST(req) {
   const body = await req.json();
-  const { email, password, firstName, lastName, username, secret } = body;
+  let { email, password, firstName, lastName, username, secret } = body;
+
+  email = email.toLowerCase()
 
   const emailRegex = new RegExp(/^[\w\\.\\+]+@([\w-]+\.)+[\w-]{2,}$/);
   const passwordRegex = new RegExp(

@@ -239,7 +239,7 @@ const Vote = ({ campaignID }) => {
                                     <p
                                         className=""
                                     >{candidate.description}</p>
-                                    <div
+                                    { candidate?.image != "" && (<div
                                         className="flex"
                                         >
                                     <Image
@@ -249,7 +249,7 @@ const Vote = ({ campaignID }) => {
                                         height={64}
                                         className="rounded-full"
                                         />
-                                    </div>
+                                    </div>)}
                                     {candidate.additionalFields.map((field, index) => (
                                         <div
                                             key={index}

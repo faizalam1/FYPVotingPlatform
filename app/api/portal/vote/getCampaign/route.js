@@ -53,5 +53,6 @@ export async function GET(req) {
     endDateTime: campaign.endDateTime,
     isResultsPublic: campaign.isResultsPublic,
     viewResults: campaign.viewResults,
+    createdBy: campaign.createdBy
   });
 }

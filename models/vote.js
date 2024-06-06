@@ -30,6 +30,10 @@ const VoteSchema = new Schema({
       },
     },
   ],
+  confidentialLedgerTransactionID : {
+    type: Number,
+    default: -1
+  },
   votedAt: {
     type: Date,
     default: Date.now,

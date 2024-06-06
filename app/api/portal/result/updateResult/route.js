@@ -33,7 +33,7 @@ const calculateRankedResult = (candidatesInput, votesInput) => {
   
   let round = 0;
 
-  while (candidates.length > 0) {
+  while (candidates.length > 1) {
     let roundResult = candidates.map((candidate) => (
       {
         candidateID: candidate._id,
@@ -63,22 +63,23 @@ const calculateRankedResult = (candidatesInput, votesInput) => {
     const eliminatedCandidates = roundResult.filter(
       (candidate) => candidate.votes === minVotes
     );
-
     candidates = candidates.filter(
-      (candidate) =>
-        !eliminatedCandidates.find(
-          (eliminatedCandidate) =>
-            eliminatedCandidate.candidateID === candidate.id
+      (candidate) => {
+        return !eliminatedCandidates.some(
+          (eliminatedCandidate) => {
+            return eliminatedCandidate.candidateID.toString() === candidate._id.toString();
+          }
         )
-    );
-
+      }
+      )
     votes = votes.map((vote) => (
       vote.filter(
-        (candidate) =>
-          !eliminatedCandidates.find(
-            (eliminatedCandidate) =>
-              eliminatedCandidate.candidateID === candidate.candidateID
-          )
+        (candidate) =>{
+          return !eliminatedCandidates.some(
+            (eliminatedCandidate) => {
+              return eliminatedCandidate.candidateID.toString() === candidate.candidateID.toString();
+            })
+        }
       )
     ));
 
@@ -114,8 +115,7 @@ export async function PUT(req) {
     await connectToDatabase();
     let votes;
     const campaign = await Campaign.findOne({
-      _id: campaignID,
-      createdBy: user.id,
+      _id: campaignID
     });
     if (!campaign) {
       return NextResponse.json(
@@ -161,7 +161,7 @@ export async function PUT(req) {
     else {
       return NextResponse.json(
         { error: "Result already calculated!" },
-        { status: 400 }
+        { status: 409 }
       );
     }
 

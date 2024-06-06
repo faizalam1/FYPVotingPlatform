@@ -8,6 +8,7 @@ import { connectToDatabase } from "@/utils/database";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { createHash } from "crypto";
+import { createLedgerEntry } from "@/utils/createLedgerEntry";
 
 export async function POST(req) {
     const session = await getServerSession(authOptions);
@@ -74,7 +75,7 @@ export async function POST(req) {
         );
     }
     let candidate;
-    let rankArray;
+    let rankArray = [];
     rankedVote.forEach(async (candidateVote, index) => {
         if (rankArray.includes(candidateVote.rank)) {
             return NextResponse.json(
@@ -118,5 +119,16 @@ export async function POST(req) {
             { status: 500 }
         );
     }
+    console.log(vote);
+    const result = await createLedgerEntry(campaign.name + " " + campaign.createdBy, vote);
+    console.log(result)
+    if (result.status !== 200) {
+        return NextResponse.json(
+            { error: "Vote failed!" },
+            { status: 500 }
+        );
+    }
+    vote.confidentialLedgerTransactionID = result.transactionId;
+    await vote.save();
     return NextResponse.json({ success: "Vote successful!" });
 }

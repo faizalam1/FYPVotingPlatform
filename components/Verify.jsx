@@ -1,6 +1,6 @@
 'use client';
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
 
 
@@ -10,8 +10,14 @@ const Verify = () => {
 
     const router = useRouter();
 
+    const searchParams = useSearchParams();
+
     const emailRegex = new RegExp(/^[\w\.\\+]+@([\w-]+\.)+[\w-]{2,}$/);
     const tokenRegex = new RegExp(/^[0-9A-Fa-f]{8}$/);
+
+    useEffect(() => {
+        setEmail(searchParams.get('email'));
+    },[searchParams])
 
     const handleVerify = async (e) => {
         e.preventDefault()
@@ -41,7 +47,7 @@ const Verify = () => {
         );
         if (response.status == 200) {
             alert("Account verified! Login to continue")
-            router.push("/app/auth");
+            router.push("/app/auth?signInEmail="+email);
             router.refresh();
         }
         else if (response.status == 400) {

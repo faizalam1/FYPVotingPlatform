@@ -1,6 +1,6 @@
 'use client';
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 
@@ -15,6 +15,10 @@ const Signin = () => {
 
   const searchParams = useSearchParams();
   const callbackURL = searchParams.get("callbackUrl");
+
+  useEffect(() => {
+    setEmail(searchParams.get("signInEmail"));
+  },[searchParams])
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
@@ -35,7 +39,7 @@ const Signin = () => {
     });
     if (response.status == 200) {
       alert("Password reset code sent to your email!")
-      router.push("/app/auth/changepassword");
+      router.push("/app/auth/changepassword?email=" + email);
       router.refresh();
     }
     else if (response.status == 404) {
@@ -76,7 +80,7 @@ const Signin = () => {
     }
     else if(response.error == "User not verified!"){
       alert("User not verified!")
-      router.push("/app/auth/verify");
+      router.push("/app/auth/verify?email="+email);
       router.refresh();
     }
     else {

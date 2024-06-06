@@ -1,6 +1,6 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const ForgotPasswordForm = () => {
     const [email, setEmail] = useState('');
@@ -9,10 +9,15 @@ const ForgotPasswordForm = () => {
     const [password2, setPassword2] = useState('');
 
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const emailRegex = new RegExp(/^[\w\.\\+]+@([\w-]+\.)+[\w-]{2,}$/);
     const tokenRegex = new RegExp(/^[0-9A-Fa-f]{8}$/);
     const passwordRegex = new RegExp(/^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/);
+
+    useEffect(() => {
+        setEmail(searchParams.get('email'));
+    },[searchParams])
 
     const handleForgotPassword = async (e) => {
         e.preventDefault();
@@ -50,7 +55,7 @@ const ForgotPasswordForm = () => {
         });
         if (response.status == 200) {
             alert("Password changed! Login to continue")
-            router.push("/app/auth");
+            router.push("/app/auth?signInEmail="+email);
             router.refresh();
         }
         else if (response.status == 400) {

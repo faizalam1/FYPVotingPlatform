@@ -42,7 +42,7 @@ const Signup = () => {
         password: password,
         redirect: false
       });
-      router.push("/app/auth/verify");
+      router.push("/app/auth/verify?email="+email);
       router.refresh();
     } else if (response.status == 409) {
       const data = await response.json();
